@@ -15,6 +15,7 @@ from src.database_handler import DatabaseHandler
 from src.config_handler import get_lote_from_config, get_bobina_saida_from_config, load_config
 from src.models import PLCReportData
 from src.data_handler import ProductionDataHandler
+from src.monitor_utils import get_current_shift, should_send_email, create_email_lock
 
 class PLCHandler:
     def __init__(self, config, plc_name, shared_data_manager, email_notifier, email_lock_dir):
@@ -58,6 +59,9 @@ class PLCHandler:
         self.email_lock_dir = email_lock_dir
         self.last_trigger_value = None
         self.data_handler = ProductionDataHandler(config, plc_name)
+        self.last_db_sync_value = 0
+        self.last_db_sync_time = time.time()
+        self.current_shift_tracker = get_current_shift()
 
     def ping_host(self, ip_address):
         try:
@@ -293,13 +297,42 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                 logging.error(f"[{self.plc_name}] Failed to read Coil_change: {trigger_coil_data.Status}")
                 self.connected = False
                 return
-                logging.error(f"[{self.plc_name}] Failed to read tags: Main={main_data.Status}, Feed={feed_data.Status}, Bobina={bobina_data.Status}")
-                self.connected = False
-                return 
 
             current_main_value = count_discharge_data.Value
             current_bobina_value = bobina_data.Value
             
+            # --- LÓGICA DE GRAVAÇÃO POR TURNO E LOTE (TOTVS) ---
+            if current_main_value is not None:
+                # Inicializa referência na primeira leitura para evitar pico no reinício
+                if self.last_db_sync_value == 0 and current_main_value > 0:
+                    self.last_db_sync_value = current_main_value
+
+                # Se houve reset no PLC (valor atual menor que o último salvo), reseta nossa referência
+                if current_main_value < self.last_db_sync_value:
+                    self.last_db_sync_value = 0
+
+                # Verifica mudança de turno para fechar o lote atual no turno correto
+                real_current_shift = get_current_shift()
+                if self.current_shift_tracker != real_current_shift:
+                    delta_producao = current_main_value - self.last_db_sync_value
+                    
+                    if delta_producao > 0:
+                        try:
+                            bobina_info = get_bobina_saida_from_config(self.plc_name)
+                            coil_num = bobina_info.get('lote', 'N/A')
+                            
+                            DatabaseHandler.insert_production_record(
+                                machine_name=self.plc_name,
+                                coil_number=coil_num,
+                                cups_produced=delta_producao,
+                                consumption_type="Fechamento Turno",
+                                shift=self.current_shift_tracker # Grava no turno que encerrou
+                            )
+                            self.last_db_sync_value = current_main_value
+                        except Exception as e:
+                            logging.error(f"[{self.plc_name}] Erro ao gravar fechamento de turno: {e}")
+                    
+                    self.current_shift_tracker = real_current_shift
 
 
             logging.debug(f"[{self.plc_name}] Raw feed_data.Value: {feed_data.Value} (type: {type(feed_data.Value)})")
@@ -440,7 +473,6 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                 logging.info(f"[{self.plc_name}]  TRIGGER DE TROCA DE BOBINA ATIVADO (Bobina_Trocada = 1)")
 
                 # --- INÍCIO DA LÓGICA DE ENVIO DE E-MAIL E REGISTRO DE PRODUÇÃO ---
-                from src.monitor_utils import should_send_email, create_email_lock, get_current_shift
 
                 lote_atual = get_lote_from_config(self.plc_name)
                 bobina_saida_info = get_bobina_saida_from_config(self.plc_name)
@@ -448,13 +480,21 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
 
                 # Insere registro no DB
                 try:
+                    # Se houve reset no PLC antes da troca
+                    if self.main_value < self.last_db_sync_value:
+                        self.last_db_sync_value = 0
+                        
+                    # Calcula o delta final (o que foi produzido desde a última parcial até agora)
+                    delta_final = self.main_value - self.last_db_sync_value
+                    
                     DatabaseHandler.insert_production_record(
                         machine_name=self.plc_name,
                         coil_number=bobina_saida_info['lote'],
-                        cups_produced=self.main_value,
+                        cups_produced=delta_final,
                         consumption_type=self.bobina_saida,
-                        shift=current_shift
+                        shift=self.current_shift_tracker
                     )
+                    self.last_db_sync_value = self.main_value # Sincroniza a referência
                 except Exception as db_error:
                     logging.error(f"[{self.plc_name}] Falha ao inserir registro no banco de dados: {db_error}")
 

@@ -72,9 +72,9 @@ nav:
     - Modelos de Dados: api/models.md
     - Integração TOTVS: api/totvs.md
   - Manutenção:
-    - Backup: maintenance/backup.md
-    - Logs: maintenance/logs.md
-    - Serviço Windows: maintenance/service.md
+    - Backup: backup.md
+    - Logs: logs.md
+    - Serviço Windows: service.md
   - Sobre: about.md
 
 plugins:

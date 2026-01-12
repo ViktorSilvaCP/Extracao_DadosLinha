@@ -32,7 +32,7 @@
 
     Sistema robusto com backup automático, fallback inteligente e recuperação de falhas
 
-    [:octicons-arrow-right-24: Saiba Mais](maintenance/backup.md)
+    [:octicons-arrow-right-24: Saiba Mais](backup.md)
 
 </div>
 

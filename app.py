@@ -6,6 +6,7 @@ from threading import Thread
 import uvicorn
 import subprocess
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from fastapi.staticfiles import StaticFiles
 
 # Novos módulos organizados
@@ -33,41 +34,6 @@ tags_metadata = [
     },
 ]
 
-# Configuração da aplicação
-app = FastAPI(
-    title="🚀 Sistema de Extração de Dados - Canpack",
-    description="""
-Monitoramento industrial avançado para linhas Cupper.
-Este sistema centraliza a coleta de dados de produção, controle de lotes e geração de relatórios automáticos.
-
-### Categorias:
-* **Monitoramento**: Status atual de produção e conexão.
-* **Relatórios**: Dados históricos por turno e bobina.
-* **Operação**: Interface para input de novos lotes.
-    """,
-    version="2.1.0",
-    openapi_tags=tags_metadata
-)
-
-# Monta arquivos estáticos
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
-
-# Gera a documentação automaticamente antes de montar a rota
-try:
-    print("Gerando documentação MkDocs...")
-    subprocess.run([sys.executable, "-m", "mkdocs", "build"], check=True)
-except Exception as e:
-    logging.error(f"Erro ao gerar documentação MkDocs: {e}")
-
-# Monta documentação MkDocs
-try:
-    app.mount("/documentation", StaticFiles(directory="site", html=True), name="documentation")
-except Exception as e:
-    logging.warning(f"Documentação MkDocs não encontrada. Execute 'python -m mkdocs build' para gerar.")
-
-# Adiciona as rotas organizadas
-app.include_router(router)
-
 def setup_logging():
     """Configura o sistema de logs."""
     log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
@@ -87,8 +53,8 @@ def setup_logging():
         ]
     )
 
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     """Inicializa os serviços em segundo plano ao iniciar o servidor."""
     setup_logging()
     logging.info("Iniciando sistema...")
@@ -113,6 +79,43 @@ async def startup_event():
     
     monitor_manager.start_monitoring(plcs_to_monitor, email_notifier, lock_dir)
     logging.info("Monitoramento de PLCs iniciado.")
+    yield
+
+# Configuração da aplicação
+app = FastAPI(
+    title="🚀 Sistema de Extração de Dados - Canpack",
+    description="""
+Monitoramento industrial avançado para linhas Cupper.
+Este sistema centraliza a coleta de dados de produção, controle de lotes e geração de relatórios automáticos.
+
+### Categorias:
+* **Monitoramento**: Status atual de produção e conexão.
+* **Relatórios**: Dados históricos por turno e bobina.
+* **Operação**: Interface para input de novos lotes.
+    """,
+    version="2.1.0",
+    openapi_tags=tags_metadata,
+    lifespan=lifespan
+)
+
+# Monta arquivos estáticos
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
+
+# Gera a documentação automaticamente antes de montar a rota
+try:
+    print("Gerando documentação MkDocs...")
+    subprocess.run([sys.executable, "-m", "mkdocs", "build"], check=True)
+except Exception as e:
+    logging.error(f"Erro ao gerar documentação MkDocs: {e}")
+
+# Monta documentação MkDocs
+try:
+    app.mount("/documentation", StaticFiles(directory="site", html=True), name="documentation")
+except Exception as e:
+    logging.warning(f"Documentação MkDocs não encontrada. Execute 'python -m mkdocs build' para gerar.")
+
+# Adiciona as rotas organizadas
+app.include_router(router)
 
 if __name__ == "__main__":
     # Host e porta configurados conforme original
