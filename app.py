@@ -56,11 +56,12 @@ app.include_router(router)
 
 def setup_logging():
     """Configura o sistema de logs."""
-    log_dir = r'F:\Doc_Comp\(Publico)\Dados\ControlLogix\logs'
+    log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
     if not os.path.exists(log_dir):
-        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
+        os.makedirs(log_dir, exist_ok=True)
     
-    os.makedirs(log_dir, exist_ok=True)
+    # Backup log path as secondary
+    secondary_log_dir = r'F:\Doc_Comp\(Publico)\Dados\ControlLogix\logs'
     log_file = os.path.join(log_dir, f"plc_system_{get_current_sao_paulo_time().strftime('%Y%m%d')}.log")
 
     logging.basicConfig(

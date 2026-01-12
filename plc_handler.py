@@ -255,11 +255,9 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
 
             try:
                 os.makedirs(self.data_dir, exist_ok=True)
-            except FileNotFoundError:
-                logging.warning(f"[{self.plc_name}] Network data directory '{self.data_dir}' not found. Falling back to a local directory.")
-                
+            except Exception as e:
+                logging.warning(f"[{self.plc_name}] Falha ao acessar diretório de rede '{self.data_dir}': {e}. Usando fallback local.")
                 script_dir = os.path.dirname(os.path.abspath(__file__))
-                
                 local_data_dir = os.path.join(script_dir, 'production_data', self.plc_name.replace(" ", "_"))
                 self.data_dir = local_data_dir  
                 os.makedirs(self.data_dir, exist_ok=True)

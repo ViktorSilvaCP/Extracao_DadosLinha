@@ -50,7 +50,7 @@
         }
     },
     "production_config": {
-        "size_data_dir": "F:\\Doc_Comp\\(Publico)\\Dados\\ControlLogix\\Cupper 22"
+        "size_data_dir": "production_data/Cupper_22"
     },
     "status": "ONLINE",
     "lote_config": {

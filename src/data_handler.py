@@ -20,7 +20,9 @@ class ProductionDataHandler:
         try:
             os.makedirs(self.base_dir, exist_ok=True)
         except Exception as e:
-            logging.error(f"[{self.plc_name}] Erro ao criar diretório de produção: {e}")
+            logging.warning(f"[{self.plc_name}] Falha ao acessar diretório de rede '{self.base_dir}': {e}. Usando fallback local.")
+            self.base_dir = os.path.join('production_data', self.plc_name.replace(" ", "_"))
+            os.makedirs(self.base_dir, exist_ok=True)
 
     def get_cup_size(self, feed_value):
         """Determines cup size based on feed value and config tolerance."""
@@ -57,7 +59,18 @@ class ProductionDataHandler:
                 filepath = os.path.join(self.base_dir, filename)
                 
                 file_exists = os.path.exists(filepath)
-                self.current_file = open(filepath, 'a', encoding='utf-8')
+                try:
+                    self.current_file = open(filepath, 'a', encoding='utf-8')
+                except Exception as open_err:
+                    logging.error(f"[{self.plc_name}] Falha ao abrir arquivo {filepath}: {open_err}")
+                    # Try to fallback to local if not already there
+                    if "production_data" not in self.base_dir:
+                        self.base_dir = os.path.join('production_data', self.plc_name.replace(" ", "_"))
+                        os.makedirs(self.base_dir, exist_ok=True)
+                        filepath = os.path.join(self.base_dir, filename)
+                        self.current_file = open(filepath, 'a', encoding='utf-8')
+                    else:
+                        raise open_err
                 
                 if not file_exists:
                     self.current_file.write(f"Início da produção: {timestamp}\n")
