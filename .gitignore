@@ -1,0 +1,6 @@
+logs
+backups
+production_data.db
+src/production_data.db
+pycache/
+__pycache__

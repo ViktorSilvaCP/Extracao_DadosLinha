@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Relatório de Produção - CANPACK BRASIL</title>
+    <style>
+        body, table, td, div, p, a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+        }
+        table {
+            border-collapse: collapse;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            max-width: 100%;
+            display: block;
+        }
+        .email-container {
+            max-width: 700px !important;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .font-poppins {
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            .plc-grid {
+                display: block !important;
+                width: 100%;
+            }
+            .plc-stat {
+                display: block !important;
+                width: 100% !important;
+                margin-bottom: 8px;
+            }
+            .summary-stats {
+                display: block !important;
+                width: 100%;
+            }
+            .stat-item {
+                display: block !important;
+                width: 100% !important;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f3f4f6;">
+    <!--[if mso]>
+        <style type="text/css">
+            body, table, td {font-family: Arial, sans-serif !important;}
+        </style>
+    <![endif]-->
+    
+    <!-- Container Principal -->
+    <center>
+        <table class="email-container" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:700px; margin:0 auto;">
+            <!-- Cabeçalho -->
+            <tr>
+                <td bgcolor="#00529B" style="background: #00529B; color: #ffffff; padding: 15px; font-family: 'Poppins', Arial, sans-serif;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td>
+                                <table align="left" cellpadding="0" cellspacing="0" border="0" style="max-width:70%;">
+                                    <tr>
+                                        <td valign="middle" align="left" style="padding: 10px 0;">
+                                            <table cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                    <td width="48" height="48" bgcolor="#ffffff" align="center" style="border-radius:50%;">
+                                                        <div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#00529B">
+                                                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                                            </svg>
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding-left:12px;">
+                                                        <h1 style="font-size:24px; margin:0; line-height:1.3; font-weight:700; color:#ffffff;">CANPACK BRASIL</h1>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table align="right" cellpadding="0" cellspacing="0" border="0" style="display:none; mso-hide:all;">
+                                    <tr>
+                                        <td>
+                                            <div style="font-size:14px; color:#ffffff; font-weight:500; text-align:right; padding-right:15px;">
+                                                Sistema PLC<br>
+                                                <strong style="font-size:20px;">Relatório</strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p style="font-size:14px; color:#dbeafe; margin-top:5px; margin-bottom:0;">Monitoramento de Produção em Tempo Real</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+            <!-- Resumo de Produção -->
+            <tr>
+                <td bgcolor="#f9fafb" style="padding:20px 15px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f3f4f6" style="border:1px solid #e5e7eb; border-radius:8px; background:#f9fafb;">
+                        <tr>
+                            <td style="padding:15px;">
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                        <td>
+                                            <h2 style="font-size:20px; color:#374151; font-weight:600; margin:0;">Resumo de Produção</h2>
+                                            <p style="font-size:14px; color:#6b7280; margin-top:5px; margin-bottom:0;">Atualizado em tempo real</p>
+                                        </td>
+                                        <td width="30%" align="right" style="padding-left:20px;">
+                                            <div style="background-color:#f0fdf4; border:1px solid #bbf7d0; border-radius:50px; padding:8px 15px; display:inline-block;">
+                                                <table cellpadding="0" cellspacing="0" border="0">
+                                                    <tr>
+                                                        <td valign="middle" style="color:#22c55e;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px;">
+                                                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.4-1.4 3.6 3.6 7.6-7.6 1.4 1.4-9 9z"></path>
+                                                            </svg>
+                                                        </td>
+                                                        <td valign="middle">
+                                                            <span style="font-size:14px; color:#166534; font-weight:500;">Produção Ativa</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="summary-stats" style="margin-top:20px;">
+                                    <tr>
+                                        <td class="stat-item" width="33%" align="center" style="padding:10px;">
+                                            <table cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                    <td>
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin-bottom:5px;">DATA/HORA</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p style="font-size:14px; font-weight:600; color:#374151; margin:0;">16/06/2023 14:30:45</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td class="stat-item" width="33%" align="center" style="padding:10px;">
+                                            <table cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                    <td>
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin-bottom:5px;">PLCs MONITORADOS</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p style="font-size:14px; font-weight:600; color:#374151; margin:0;">2</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td class="stat-item" width="33%" align="center" style="padding:10px;">
+                                            <table cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                    <td>
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin-bottom:5px;">STATUS</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p style="font-size:14px; font-weight:600; color:#16a34a; margin:0;">ATIVO</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+            <!-- Seção PLC -->
+            <tr>
+                <td bgcolor="#ffffff" style="padding:20px 15px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td style="padding-bottom:10px;">
+                                <h3 style="font-size:18px; font-weight:600; color:#00529B; margin:0; position:relative; padding-left:15px;">
+                                    <div style="position:absolute; top:8px; left:0; width:8px; height:8px; background-color:#FF6B00; border-radius:50%;"></div>
+                                    Linhas de Produção
+                                </h3>
+                            </td>
+                        </tr>
+                        
+                        <!-- Card PLC 22 -->
+                        <tr>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;">
+                                    <tr>
+                                        <td style="padding:15px;">
+                                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                    <td>
+                                                        <table cellpadding="0" cellspacing="0" border="0">
+                                                            <tr>
+                                                                <td valign="top" width="24" style="padding-right:8px;">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#00529B" style="margin-top:3px;">
+                                                                        <path d="M22 22h-4v-4h-4v-4h-4v-4H8V4H4v16H2V2h2v20h18v2z"/>
+                                                                    </svg>
+                                                                </td>
+                                                                <td valign="top">
+                                                                    <h4 style="font-size:18px; font-weight:700; color:#1f2937; margin:0;">Linha 22</h4>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <p style="font-size:12px; color:#6b7280; margin:5px 0 0 32px;">ID: PLC-022</p>
+                                                    </td>
+                                                    <td align="right" width="30%">
+                                                        <span style="font-size:12px; font-weight:500; background-color:#dbeafe; color:#1e40af; padding:4px 12px; border-radius:99px;">ATIVO</span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="plc-grid" style="margin-top:20px;">
+                                                <tr>
+                                                    <td class="plc-stat" width="25%" align="center" style="padding:8px; background-color:#f9fafb; border-radius:8px; margin:4px;">
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin:0;">Formato</p>
+                                                        <p style="font-size:14px; font-weight:500; color:#374151; margin-top:3px;">500ml</p>
+                                                    </td>
+                                                    <td class="plc-stat" width="25%" align="center" style="padding:8px; background-color:#f9fafb; border-radius:8px; margin:4px;">
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin:0;">Feed Rate</p>
+                                                        <p style="font-size:14px; font-weight:500; color:#374151; margin-top:3px;">1.2540 inch</p>
+                                                    </td>
+                                                    <td class="plc-stat" width="25%" align="center" style="padding:8px; background-color:#f9fafb; border-radius:8px; margin:4px;">
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin:0;">Contador</p>
+                                                        <p style="font-size:14px; font-weight:500; color:#374151; margin-top:3px;">4.250</p>
+                                                    </td>
+                                                    <td class="plc-stat" width="25%" align="center" style="padding:8px; background-color:#f9fafb; border-radius:8px; margin:4px;">
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin:0;">Total Acumulado</p>
+                                                        <p style="font-size:14px; font-weight:500; color:#374151; margin-top:3px;">1.250.500 copos</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        
+                        <!-- Card PLC 23 -->
+                        <tr>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;">
+                                    <tr>
+                                        <td style="padding:15px;">
+                                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                    <td>
+                                                        <table cellpadding="0" cellspacing="0" border="0">
+                                                            <tr>
+                                                                <td valign="top" width="24" style="padding-right:8px;">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#00529B" style="margin-top:3px;">
+                                                                        <path d="M22 22h-4v-4h-4v-4h-4v-4H8V4H4v16H2V2h2v20h18v2z"/>
+                                                                    </svg>
+                                                                </td>
+                                                                <td valign="top">
+                                                                    <h4 style="font-size:18px; font-weight:700; color:#1f2937; margin:0;">Linha 23</h4>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <p style="font-size:12px; color:#6b7280; margin:5px 0 0 32px;">ID: PLC-023</p>
+                                                    </td>
+                                                    <td align="right" width="30%">
+                                                        <span style="font-size:12px; font-weight:500; background-color:#dbeafe; color:#1e40af; padding:4px 12px; border-radius:99px;">ATIVO</span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="plc-grid" style="margin-top:20px;">
+                                                <tr>
+                                                    <td class="plc-stat" width="25%" align="center" style="padding:8px; background-color:#f9fafb; border-radius:8px; margin:4px;">
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin:0;">Formato</p>
+                                                        <p style="font-size:14px; font-weight:500; color:#374151; margin-top:3px;">350ml</p>
+                                                    </td>
+                                                    <td class="plc-stat" width="25%" align="center" style="padding:8px; background-color:#f9fafb; border-radius:8px; margin:4px;">
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin:0;">Feed Rate</p>
+                                                        <p style="font-size:14px; font-weight:500; color:#374151; margin-top:3px;">1.1500 inch</p>
+                                                    </td>
+                                                    <td class="plc-stat" width="25%" align="center" style="padding:8px; background-color:#f9fafb; border-radius:8px; margin:4px;">
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin:0;">Contador</p>
+                                                        <p style="font-size:14px; font-weight:500; color:#374151; margin-top:3px;">3.980</p>
+                                                    </td>
+                                                    <td class="plc-stat" width="25%" align="center" style="padding:8px; background-color:#f9fafb; border-radius:8px; margin:4px;">
+                                                        <p style="font-size:12px; font-weight:500; color:#6b7280; margin:0;">Total Acumulado</p>
+                                                        <p style="font-size:14px; font-weight:500; color:#374151; margin-top:3px;">980.250 copos</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+            <!-- Informações Adicionais -->
+            <tr>
+                <td bgcolor="#ffffff" style="padding:0 15px 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eff6ff" style="border:1px solid #bfdbfe; border-radius:8px;">
+                        <tr>
+                            <td style="padding:15px;">
+                                <h3 style="font-size:18px; font-weight:600; color:#00529B; margin:0;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#00529B" style="vertical-align:middle; margin-right:8px;">
+                                        <circle cx="12" cy="12" r="10" fill="none" stroke="#00529B" stroke-width="2"></circle>
+                                        <path fill="none" stroke="#00529B" stroke-width="2" d="M11 16v-5h1"></path>
+                                        <circle cx="12" cy="7" r="1"></circle>
+                                    </svg>
+                                    Informações Adicionais
+                                </h3>
+                                <ul style="font-size:14px; color:#374151; padding-left:25px; margin-top:15px; margin-bottom:0;">
+                                    <li style="margin-bottom:8px;">Relatório gerado automaticamente pelo sistema PLC</li>
+                                    <li style="margin-bottom:8px;">Todos os dados em tempo real medidos por sensores industriais</li>
+                                    <li>Anexos deste email incluem relatórios detalhados em formato TXT</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+            <!-- Rodapé -->
+            <tr>
+                <td bgcolor="#00529B" style="padding:20px 15px; color:#ffffff; font-family:'Poppins', Arial, sans-serif;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td>
+                                <p style="font-size:14px; color:#dbeafe; margin:0 0 8px 0;">Sistema de Monitoramento PLC - CANPACK BR</p>
+                                <p style="font-size:12px; color:#bfdbfe; margin:0;">© 2025 CANPACK Group. Todos os direitos reservados.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top:15px;">
+                                <p style="font-size:14px; margin:0 0 8px 0;">Contato de Suporte</p>
+                                <a href="mailto:victor.nascimento@canpack.com?subject=Sistema%20de%20monitoramento%20de%20bobinas&body=Ol%C3%A1%2C%20gostaria%20de%20reportar.." style="font-weight:500; color:#ffffff; text-decoration:none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" style="vertical-align:middle; margin-right:5px;">
+                                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                        <path d="M22 8l-10 7L2 8"></path>
+                                    </svg>
+                                    Victor Nascimento
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!-- Disclaimer -->
+            <tr>
+                <td bgcolor="#1f2937" style="padding:15px; text-align:center;">
+                    <p style="font-size:12px; color:#9ca3af; margin:0;">Este é um email automático. Por favor, não responda a esta mensagem.</p>
+                </td>
+            </tr>
+        </table>
+    </center>
+</body>
+</html>

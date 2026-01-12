@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Controle de Lotes - CANPACK BRASIL</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .status {
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f7fafc;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .status-text {
+            color: #2d3748;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .features {
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .features h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .features ul {
+            color: #718096;
+            line-height: 1.6;
+        }
+        
+        .features li {
+            margin-bottom: 8px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏭</div>
+        <h1>Sistema de Controle de Lotes</h1>
+        <p class="subtitle">CANPACK BRASIL</p>
+        
+        <a href="http://10.81.5.219:15789/" target="_blank" class="btn">
+            🌐 Abrir Sistema
+        </a>
+        
+        <a href="http://10.81.5.219:15789/api/lotes" target="_blank" class="btn btn-secondary">
+            📊 Ver Lotes Atuais
+        </a>
+        
+        <div class="status">
+            <p class="status-text">
+                <strong>Status:</strong> 
+                <span id="status">Verificando...</span>
+            </p>
+        </div>
+        
+        <div class="features">
+            <h3>📋 Funcionalidades:</h3>
+            <ul>
+                <li>✅ Interface web para inserção de lotes</li>
+                <li>✅ Integração com PLCs Cupper 22 e 23</li>
+                <li>✅ Notificações por email automáticas</li>
+                <li>✅ APIs para consulta de lotes</li>
+                <li>✅ Monitoramento em tempo real</li>
+                <li>✅ Salvamento automático em configurações</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Desenvolvido para CANPACK BRASIL | Suporte: Victor.nascimento@canpack.com</p>
+            <p>Versão 1.0.0 | 2025</p>
+        </div>
+    </div>
+
+    <script>
+        // Verificar status da conexão
+        function checkStatus() {
+            const statusElement = document.getElementById('status');
+            
+            fetch('http://10.81.5.219:15789/api/lotes')
+                .then(response => {
+                    if (response.ok) {
+                        statusElement.textContent = '✅ Sistema Online';
+                        statusElement.style.color = '#059669';
+                    } else {
+                        statusElement.textContent = '⚠️ Sistema com Problemas';
+                        statusElement.style.color = '#d97706';
+                    }
+                })
+                .catch(error => {
+                    statusElement.textContent = '❌ Sistema Offline';
+                    statusElement.style.color = '#dc2626';
+                });
+        }
+        
+        // Verificar status ao carregar a página
+        checkStatus();
+        
+        // Verificar status a cada 30 segundos
+        setInterval(checkStatus, 30000);
+        
+        // Adicionar confirmação antes de sair
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = 'Tem certeza que deseja sair do Sistema de Lotes?';
+        });
+    </script>
+</body>
+</html> 
