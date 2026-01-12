@@ -4,6 +4,7 @@ import sys
 import tempfile
 from threading import Thread
 import uvicorn
+import subprocess
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -50,6 +51,19 @@ Este sistema centraliza a coleta de dados de produção, controle de lotes e ger
 
 # Monta arquivos estáticos
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
+
+# Gera a documentação automaticamente antes de montar a rota
+try:
+    print("Gerando documentação MkDocs...")
+    subprocess.run([sys.executable, "-m", "mkdocs", "build"], check=True)
+except Exception as e:
+    logging.error(f"Erro ao gerar documentação MkDocs: {e}")
+
+# Monta documentação MkDocs
+try:
+    app.mount("/documentation", StaticFiles(directory="site", html=True), name="documentation")
+except Exception as e:
+    logging.warning(f"Documentação MkDocs não encontrada. Execute 'python -m mkdocs build' para gerar.")
 
 # Adiciona as rotas organizadas
 app.include_router(router)
@@ -102,4 +116,4 @@ async def startup_event():
 
 if __name__ == "__main__":
     # Host e porta configurados conforme original
-    uvicorn.run(app, host="10.81.5.219", port=15789)
+    uvicorn.run(app, host="0.0.0.0", port=15789)

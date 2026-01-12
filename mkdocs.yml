@@ -1,0 +1,82 @@
+site_name: Sistema de Monitoramento PLC - CANPACK
+site_description: Sistema avançado de monitoramento industrial para linhas Cupper
+site_author: Victor Nascimento - CANPACK Brasil
+site_url: http://10.81.5.219:15789/documentation
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: blue
+      accent: orange
+      toggle:
+        icon: material/brightness-7
+        name: Modo escuro
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: blue
+      accent: orange
+      toggle:
+        icon: material/brightness-4
+        name: Modo claro
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
+  logo: /assets/logo.png
+  favicon: /assets/favicon.ico
+
+extra:
+  social:
+    - icon: fontawesome/solid/envelope
+      link: mailto:victor.nascimento@canpack.com
+      name: Email de Suporte
+  version:
+    provider: mike
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Início: index.md
+  - Guia de Uso:
+    - Visão Geral: guide/overview.md
+    - Instalação: guide/installation.md
+    - Configuração: guide/configuration.md
+  - API Reference:
+    - Endpoints: api/endpoints.md
+    - Modelos de Dados: api/models.md
+    - Integração TOTVS: api/totvs.md
+  - Manutenção:
+    - Backup: maintenance/backup.md
+    - Logs: maintenance/logs.md
+    - Serviço Windows: maintenance/service.md
+  - Sobre: about.md
+
+plugins:
+  - search:
+      lang: pt

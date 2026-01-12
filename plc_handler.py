@@ -472,18 +472,12 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                     current_shift=current_shift,
                     count_discharge_total=self.count_discharge_total
                 )
-
-                # Cria anexo
                 temp_file_info = self.create_temp_production_file(lote_atual)
                 if temp_file_info:
                     report_data.temp_attachment_path, content_bytes = temp_file_info
                     report_data.attachment_filename = os.path.basename(report_data.temp_attachment_path)
                     report_data.attachment_content = content_bytes
-
-                # Lista de PLCs para o e-mail (neste caso, apenas um)
                 plcs_list_for_report = [report_data]
-
-                # Verifica se deve enviar o e-mail usando a trava
                 if should_send_email(plcs_list_for_report, self.email_lock_dir):
                     logging.info(f"[{self.plc_name}] Trava de e-mail liberada. Preparando para enviar relatório.")
 

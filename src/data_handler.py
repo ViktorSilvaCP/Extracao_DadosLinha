@@ -45,7 +45,7 @@ class ProductionDataHandler:
         try:
             now = get_current_sao_paulo_time()
             date_str = now.strftime('%Y%m%d')
-            timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = now.strftime('%Y-%m-%d %H-%M-%S')  # Removed colons for Windows compatibility
             
             # Check if we need to rotate file (new day or first run)
             if date_str != self.current_date:
