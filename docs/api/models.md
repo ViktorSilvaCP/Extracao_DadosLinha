@@ -13,7 +13,7 @@ Representa um registro único de produção ou evento de troca de bobina.
 | `machine_name` | string | Nome da máquina (ex: `Cupper_22`) |
 | `coil_number` | string | Número do lote/bobina |
 | `cups_produced` | integer | Quantidade produzida neste registro |
-| `consumption_type` | string | Tipo do evento (`Baixa Completa`, `Fechamento Turno`, etc) |
+| `consumption_type` | string | Tipo do evento (`Completa`, `Parcial`, `Parcial (Turno)`) |
 | `shift` | string | Turno de produção (`DIA (07-19)` ou `NOITE (19-07)`) |
 
 ```json title="Exemplo JSON"
@@ -23,7 +23,7 @@ Representa um registro único de produção ou evento de troca de bobina.
   "machine_name": "Cupper_22",
   "coil_number": "284043",
   "cups_produced": 12500,
-  "consumption_type": "Baixa Completa",
+  "consumption_type": "Completa",
   "shift": "DIA (07-19)"
 }
 ```
@@ -86,3 +86,16 @@ Estrutura de resposta para a integração com ERP.
 | `count` | integer | Quantidade de registros retornados |
 | `results` | list | Lista de objetos ProductionRecord |
 | `timestamp` | string | Data da consulta |
+
+## ShiftProductionSummary
+
+Resumo de produção consolidado por turno.
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `machine_name` | string | Nome da máquina |
+| `shift` | string | Turno (DIA/NOITE) |
+| `coil_number` | string | Número do lote |
+| `total` | integer | Total de copos produzidos |
+| `last_update` | string | Data/Hora da última atualização |
+| `status` | string | Status final (`Completa`, `Parcial`) |

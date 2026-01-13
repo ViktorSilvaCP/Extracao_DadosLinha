@@ -58,12 +58,10 @@ O sistema conta com uma documentação interativa completa (Swagger).
 
 ## 🛠️ Manutenção e Confiabilidade
 
-### 1. Execução como Serviço do Windows
-Para garantir que o sistema inicie com o Windows e se recupere de falhas, utilize o **NSSM** (Non-Sucking Service Manager):
-1. Baixe o `nssm.exe`.
-2. No terminal: `nssm install CanpackPLCMonitor`.
-3. Configure o *Path* para o executável do Python e o *Startup directory* para a raiz do projeto.
-4. Argumento: `app.py`.
+### 1. Execução Automática (Agendador de Tarefas)
+O sistema utiliza o Agendador de Tarefas do Windows para iniciar automaticamente.
+Para instalar, execute o script PowerShell como Administrador:
+`.\install_service.ps1`
 
 ### 2. Backup Automático
 O sistema realiza um backup preventivo do banco de dados (`production_data.db`) toda vez que é iniciado. Os backups são armazenados na pasta `backups/`, mantendo apenas os 10 mais recentes.

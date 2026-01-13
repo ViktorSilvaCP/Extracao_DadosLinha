@@ -27,7 +27,7 @@ Caso o banco de dados principal seja corrompido, siga estes passos para restaura
 
 1. **Pare o serviço** do sistema:
    ```powershell
-   nssm stop CanpackPLCMonitor
+   Stop-ScheduledTask -TaskName CanpackPLCMonitor
    ```
 
 2. **Renomeie** o banco atual (se existir) para `production_data.db.old`.
@@ -38,7 +38,7 @@ Caso o banco de dados principal seja corrompido, siga estes passos para restaura
 
 5. **Inicie o serviço** novamente:
    ```powershell
-   nssm start CanpackPLCMonitor
+   Start-ScheduledTask -TaskName CanpackPLCMonitor
    ```
 
 !!! warning "Atenção"

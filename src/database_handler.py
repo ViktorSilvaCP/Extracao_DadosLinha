@@ -58,7 +58,7 @@ class DatabaseHandler:
         """Calcula a produção total por turno."""
         try:
             query = """
-                SELECT machine_name, shift, coil_number, SUM(cups_produced) as total, MAX(timestamp) as last_update
+                SELECT machine_name, shift, coil_number, SUM(cups_produced) as total, MAX(timestamp) as last_update, MAX(consumption_type) as consumption_type
                 FROM production_records
             """
             params = []
@@ -82,7 +82,7 @@ class DatabaseHandler:
         """Calcula a produção total por lote (coil_number)."""
         try:
             query = """
-                SELECT machine_name, coil_number, shift, SUM(cups_produced) as total, MIN(timestamp) as start_time, MAX(timestamp) as end_time
+                SELECT machine_name, coil_number, shift, SUM(cups_produced) as total, MIN(timestamp) as start_time, MAX(timestamp) as end_time, MAX(consumption_type) as consumption_type
                 FROM production_records
             """
             params = []

@@ -45,7 +45,7 @@ def setup_logging():
     log_file = os.path.join(log_dir, f"plc_system_{get_current_sao_paulo_time().strftime('%Y%m%d')}.log")
 
     logging.basicConfig(
-        level=logging.ERROR,
+        level=logging.INFO,
         format='%(asctime)s - %(levelname)s - [%(name)s] %(message)s',
         handlers=[
             logging.FileHandler(log_file, encoding='utf-8'),

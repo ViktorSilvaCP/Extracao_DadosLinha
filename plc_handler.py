@@ -62,12 +62,13 @@ class PLCHandler:
         self.last_db_sync_value = 0
         self.last_db_sync_time = time.time()
         self.current_shift_tracker = get_current_shift()
+        self.initial_stroke_counter = None
 
     def ping_host(self, ip_address):
         try:
             ping_cmd = ["ping", "-n", "1", ip_address] if platform.system().lower() == "windows" else ["ping", "-c", "1", ip_address]
             result = subprocess.run(ping_cmd, capture_output=True, text=True, check=True)
-            logging.info(f"[{self.plc_name}] Ping to {ip_address} successful.")
+            logging.debug(f"[{self.plc_name}] Ping to {ip_address} successful.")
             return True
         except subprocess.CalledProcessError:
             logging.warning(f"[{self.plc_name}] Ping to {ip_address} failed.")
@@ -241,7 +242,6 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
             main_tag = self.TAG_CONFIG['main_tag']
             feed_tag = self.TAG_CONFIG['feed_tag']
             bobina_tag = self.TAG_CONFIG['bobina_tag']
-            count_discharge_tag = 'Count_discharge'
             trigger_coil_tag = self.TAG_CONFIG.get('trigger_coil_tag', 'Coil_change')
             read_interval = self.CONNECTION_CONFIG['read_interval']
             
@@ -274,9 +274,12 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                     return 
 
             # Read each tag individually and log specific errors
-            count_discharge_data = self.plc.Read(count_discharge_tag)
-            if count_discharge_data.Status != 'Success':
-                logging.error(f"[{self.plc_name}] Failed to read Count_discharge: {count_discharge_data.Status}")
+            stroke_tag = self.TAG_CONFIG.get('stroke_tag', 'IGN_Total_Stroke_Counter')
+            tool_size_tag = self.TAG_CONFIG.get('tool_size_tag', 'IGN_Tool_Size')
+            
+            stroke_data = self.plc.Read(stroke_tag)
+            if stroke_data.Status != 'Success':
+                logging.error(f"[{self.plc_name}] Failed to read {stroke_tag}: {stroke_data.Status}")
                 self.connected = False
                 return
 
@@ -298,7 +301,24 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                 self.connected = False
                 return
 
-            current_main_value = count_discharge_data.Value
+            tool_size_data = self.plc.Read(tool_size_tag)
+            if tool_size_data.Status != 'Success':
+                logging.error(f"[{self.plc_name}] Failed to read {tool_size_tag}: {tool_size_data.Status}")
+                self.connected = False
+                return
+
+            # --- NOVA LÓGICA DE CONTAGEM DE COPOS ---
+            current_stroke = stroke_data.Value
+            current_tool_size = tool_size_data.Value
+
+            if self.initial_stroke_counter is None:
+                self.initial_stroke_counter = current_stroke
+                logging.info(f"[{self.plc_name}] Contador de Strokes inicializado em: {self.initial_stroke_counter}")
+            
+            if current_stroke < self.initial_stroke_counter:
+                self.initial_stroke_counter = current_stroke
+
+            current_main_value = int((current_stroke - self.initial_stroke_counter) * current_tool_size)
             current_bobina_value = bobina_data.Value
             
             # --- LÓGICA DE GRAVAÇÃO POR TURNO E LOTE (TOTVS) ---
@@ -357,9 +377,9 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
 
             
             if current_bobina_value == 1:
-                bobina_status = "Baixa Parcial"
+                bobina_status = "Parcial"
             elif current_bobina_value == 2:
-                bobina_status = "Baixa Completa"
+                bobina_status = "Completa"
             elif current_bobina_value == 0:
                 bobina_status = "Nenhuma Bobina Consumida"
             else:
@@ -396,7 +416,7 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
             
             if (feed_changed or main_changed or size_changed or bobina_changed):
                 
-                logging.debug(f"[{self.plc_name}] Values changed - Feed: {current_feed_value}, Size: {current_cup_size}, Main: {current_main_value}")
+                logging.info(f"[{self.plc_name}] 📊 Cálculo: (Stroke {current_stroke} - Início {self.initial_stroke_counter}) * Ferramenta {current_tool_size} = {current_main_value} copos")
                 
                 
                 if bobina_changed:
@@ -456,18 +476,14 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                 self.current_date = date_str
 
             # Process Count_discharge
-            current_count_discharge = count_discharge_data.Value
             current_trigger_coil = trigger_coil_data.Value
 
-            # Only process Count_discharge if trigger_coil is not active
-            if not self.coil_change_active:
-                if current_count_discharge != self.last_count_discharge and current_count_discharge is not None:
-                    # Protect against zero values
-                    if current_count_discharge > 0 or (current_count_discharge == 0 and self.last_count_discharge is not None):
-                        self.count_discharge_total += current_count_discharge
-                        logging.debug(f"[{self.plc_name}] Count_discharge updated: +{current_count_discharge}, Total: {self.count_discharge_total}")
-                    self.last_count_discharge = current_count_discharge
-
+            # Atualiza o total acumulado do dia (resetado as 6am) usando o delta do main_value calculado
+            if self.last_main_value is not None:
+                delta_cups = current_main_value - self.last_main_value
+                if delta_cups > 0:
+                    self.count_discharge_total += delta_cups
+            
             # Monitor trigger_coil
             if current_trigger_coil == 1 and not self.coil_change_active:
                 self.coil_change_active = True
@@ -557,7 +573,7 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                         logging.error(f"[{self.plc_name}] Falha ao remover arquivo temporário: {e_unlink}")
 
                 # Zera o contador para o próximo ciclo
-                self.last_count_discharge = 0
+                # self.last_count_discharge = 0 # Não é mais necessário com a nova lógica
                 # --- FIM DA LÓGICA DE ENVIO DE E-MAIL ---
 
             elif current_trigger_coil == 0 and self.coil_change_active:

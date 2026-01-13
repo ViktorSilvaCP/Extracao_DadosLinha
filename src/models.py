@@ -51,6 +51,7 @@ class ShiftProductionSummary(BaseModel):
     coil_number: str = Field(..., description="Número da bobina processada")
     total: int = Field(..., description="Quantidade total de copos produzidos no turno para esta bobina")
     last_update: str = Field(..., description="Data e hora do último registro neste turno")
+    consumption_type: Optional[str] = Field(None, description="Tipo de consumo da bobina (Completa/Parcial)")
 
 class LotProductionSummary(BaseModel):
     machine_name: str = Field(..., description="Nome da linha de produção")
@@ -59,3 +60,4 @@ class LotProductionSummary(BaseModel):
     total: int = Field(..., description="Produção total consolidada para este lote")
     start_time: str = Field(..., description="Horário de início do processamento do lote")
     end_time: str = Field(..., description="Horário de término do processamento do lote")
+    consumption_type: Optional[str] = Field(None, description="Tipo de consumo da bobina (Completa/Parcial)")
