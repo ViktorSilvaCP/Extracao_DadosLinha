@@ -328,6 +328,7 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                                 consumption_type="Fechamento Turno",
                                 shift=self.current_shift_tracker # Grava no turno que encerrou
                             )
+                            # Apenas registro no banco de dados, NÃO envia e-mail aqui.
                             self.last_db_sync_value = current_main_value
                         except Exception as e:
                             logging.error(f"[{self.plc_name}] Erro ao gravar fechamento de turno: {e}")
@@ -473,6 +474,7 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                 logging.info(f"[{self.plc_name}]  TRIGGER DE TROCA DE BOBINA ATIVADO (Bobina_Trocada = 1)")
 
                 # --- INÍCIO DA LÓGICA DE ENVIO DE E-MAIL E REGISTRO DE PRODUÇÃO ---
+                # O e-mail só é enviado aqui, quando há troca física de bobina.
 
                 lote_atual = get_lote_from_config(self.plc_name)
                 bobina_saida_info = get_bobina_saida_from_config(self.plc_name)

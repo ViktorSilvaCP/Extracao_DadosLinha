@@ -5,7 +5,7 @@ import tempfile
 from threading import Thread
 import uvicorn
 import subprocess
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from contextlib import asynccontextmanager
 from fastapi.staticfiles import StaticFiles
 
@@ -116,6 +116,29 @@ except Exception as e:
 
 # Adiciona as rotas organizadas
 app.include_router(router)
+
+@app.get("/api/logs", tags=["Manutenção"])
+def get_system_logs(level: str = Query(None, description="Filtrar por nível: INFO, DEBUG, ERROR")):
+    """Retorna os logs do sistema do dia atual."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
+        log_file = os.path.join(log_dir, f"plc_system_{get_current_sao_paulo_time().strftime('%Y%m%d')}.log")
+        
+        if not os.path.exists(log_file):
+            return {"error": "Arquivo de log não encontrado para hoje."}
+            
+        logs = []
+        with open(log_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if level:
+                    if level.upper() in line:
+                        logs.append(line.strip())
+                else:
+                    logs.append(line.strip())
+                    
+        return {"count": len(logs), "logs": logs}
+    except Exception as e:
+        return {"error": f"Erro ao ler logs: {str(e)}"}
 
 if __name__ == "__main__":
     # Host e porta configurados conforme original

@@ -34,7 +34,7 @@
         "date_format": "{size}_{date}.txt"
     },
     "logging_config": {
-        "level": "INFO",
+        "level": "ERROR",
         "format": "%(asctime)s - %(levelname)s - %(message)s"
     },
     "cup_size_config": {
