@@ -56,10 +56,10 @@
     },
     "status": "ONLINE",
     "lote_config": {
-        "current_lote": "271435",
-        "last_updated": "12/01/2026 07:52:26",
-        "bobina_saida": "284043",
-        "data_saida": "12/01/2026 07:52:26",
-        "tipo_bobina": ""
+        "current_lote": "304768",
+        "last_updated": "13/01/2026 17:22:18",
+        "bobina_saida": "271435",
+        "data_saida": "13/01/2026 14:28:52",
+        "tipo_bobina": "L1"
     }
 }

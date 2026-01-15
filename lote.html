@@ -327,9 +327,17 @@
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.text())
-                .then(html => {
-                    document.body.innerHTML = html;
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.reload();
+                    } else {
+                        alert('Erro: ' + data.message);
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Enviar Lote';
+                        submitBtn.disabled = false;
+                        isProcessing = false;
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);

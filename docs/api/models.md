@@ -1,24 +1,13 @@
 # Modelos de Dados
 
-Esta seção descreve as estruturas de dados (Schemas) utilizadas na API REST.
-
 ## ProductionRecord
 
-Representa um registro único de produção ou evento de troca de bobina.
+Representa um registro único de produção ou evento de troca de bobina. / Represents a single production record or coil change event.
 
-| Campo | Tipo | Descrição |
 |-------|------|-----------|
-| `id` | integer | Identificador único sequencial (Primary Key) |
-| `timestamp` | string | Data e hora do registro (ISO 8601) |
-| `machine_name` | string | Nome da máquina (ex: `Cupper_22`) |
-| `coil_number` | string | Número do lote/bobina |
-| `cups_produced` | integer | Quantidade produzida neste registro |
-| `consumption_type` | string | Tipo do evento (`Completa`, `Parcial`, `Parcial (Turno)`) |
-| `shift` | string | Turno de produção (`DIA (07-19)` ou `NOITE (19-07)`) |
-
-```json title="Exemplo JSON"
-{
-  "id": 1542,
+| `id` | integer | Identificador único sequencial (Primary Key) / Unique sequential identifier |
+| `timeane_name` | string | Nome da máquina (ex: `Cupper_22`) / Machine name |
+| `coil_number` | string 
   "timestamp": "2026-01-12 14:30:00",
   "machine_name": "Cupper_22",
   "coil_number": "284043",

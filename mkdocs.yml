@@ -1,5 +1,5 @@
 site_name: Sistema de Monitoramento PLC - CANPACK
-site_description: Sistema avançado de monitoramento industrial para linhas Cupper
+site_description: Sistema avançado de monitoramento industrial para linhas Cupper / Advanced industrial monitoring system for Cupper lines
 site_author: Victor Nascimento - CANPACK Brasil
 site_url: http://10.81.5.219:15789/documentation
 
@@ -62,20 +62,20 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
-  - Início: index.md
-  - Guia de Uso:
-    - Visão Geral: guide/overview.md
-    - Instalação: guide/installation.md
-    - Configuração: guide/configuration.md
+  - Início / Home: index.md
+  - Guia de Uso / User Guide:
+    - Visão Geral / Overview: guide/overview.md
+    - Instalação / Installation: guide/installation.md
+    - Configuração / Configuration: guide/configuration.md
   - API Reference:
     - Endpoints: api/endpoints.md
-    - Modelos de Dados: api/models.md
-    - Integração TOTVS: api/totvs.md
-  - Manutenção:
+    - Modelos de Dados / Data Models: api/models.md
+    - Integração TOTVS / TOTVS Integration: api/totvs.md
+  - Manutenção / Maintenance:
     - Backup: backup.md
     - Logs: logs.md
-    - Serviço Windows: service.md
-  - Sobre: about.md
+    - Serviço Windows / Windows Service: service.md
+  - Sobre / About: about.md
 
 plugins:
   - search:

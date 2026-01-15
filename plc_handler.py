@@ -12,7 +12,7 @@ from timezone_utils import get_current_sao_paulo_time
 from email_utils import send_email_direct
 from email_templates import format_plc_error_message, format_production_report
 from src.database_handler import DatabaseHandler
-from src.config_handler import get_lote_from_config, get_bobina_saida_from_config, load_config
+from src.config_handler import get_lote_from_config, load_config
 from src.models import PLCReportData
 from src.data_handler import ProductionDataHandler
 from src.monitor_utils import get_current_shift, should_send_email, create_email_lock
@@ -59,10 +59,71 @@ class PLCHandler:
         self.email_lock_dir = email_lock_dir
         self.last_trigger_value = None
         self.data_handler = ProductionDataHandler(config, plc_name)
-        self.last_db_sync_value = 0
+        self.last_db_sync_value = self._get_last_sync_value()
         self.last_db_sync_time = time.time()
         self.current_shift_tracker = get_current_shift()
         self.initial_stroke_counter = None
+        
+        self.last_coil_start_time = None
+        self.last_coil_lot_number = None
+        self.last_coil_id = None
+        self.last_coil_start_counter = None
+        
+        # Tenta recuperar o estado anterior para não zerar a produção do dia
+        self._load_persisted_state()
+
+    def _get_last_sync_value(self):
+        """Recupera o último valor absoluto do contador do banco de dados."""
+        try:
+            last_value = DatabaseHandler.get_last_absolute_counter(self.plc_name)
+            logging.info(f"[{self.plc_name}] 💾 Último contador absoluto recuperado do BD: {last_value}")
+            return last_value
+        except Exception as e:
+            logging.error(f"[{self.plc_name}] Erro ao recuperar último contador do BD: {e}. Iniciando com 0.")
+            return 0
+
+    def _load_persisted_state(self):
+        """Recupera o total diário do banco de dados se for do mesmo dia de produção."""
+        try:
+            data = DatabaseHandler.get_current_production(self.plc_name)
+            if data:
+                record = data[0]
+                last_update_str = record.get('last_update')
+                saved_total = record.get('daily_total', 0)
+                
+                if last_update_str:
+                    last_update = datetime.strptime(last_update_str, "%Y-%m-%d %H:%M:%S")
+                    now = get_current_sao_paulo_time()
+                    
+                    # Função auxiliar para determinar a data de produção (início as 06:00)
+                    def get_prod_date(dt):
+                        # Se dt for naive (do banco), assume horário local
+                        h = dt.hour
+                        d = dt.date()
+                        if h < 6:
+                            return d - timedelta(days=1)
+                        return d
+
+                    last_prod_date = get_prod_date(last_update)
+                    current_prod_date = get_prod_date(now)
+                    
+                    if last_prod_date == current_prod_date:
+                        self.count_discharge_total = saved_total
+                        self.last_reset_date = current_prod_date
+                        logging.info(f"[{self.plc_name}] ♻️ Estado restaurado: Total Diário={self.count_discharge_total} (Data Prod: {current_prod_date})")
+                    else:
+                        self.count_discharge_total = 0
+                        self.last_reset_date = current_prod_date
+                        logging.info(f"[{self.plc_name}] 🆕 Novo dia de produção detectado. Total zerado.")
+            
+            # Inicialização segura do last_reset_date se não houve restauração
+            if self.last_reset_date is None:
+                now = get_current_sao_paulo_time()
+                self.last_reset_date = now.date() if now.hour >= 6 else (now.date() - timedelta(days=1))
+
+        except Exception as e:
+            logging.error(f"[{self.plc_name}] Erro ao carregar estado persistido: {e}")
+            self.count_discharge_total = 0
 
     def ping_host(self, ip_address):
         try:
@@ -239,19 +300,24 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
     def process_plc_data(self, email_notifier=None, lock_dir=None):
         """Process data from a single PLC."""
         try:
+            # Inicializar variáveis para evitar erros de variável não definida
+            current_feed_value = None
+            current_main_value = None
+            current_bobina_value = None
+            current_cup_size = None
+            
             main_tag = self.TAG_CONFIG['main_tag']
             feed_tag = self.TAG_CONFIG['feed_tag']
             bobina_tag = self.TAG_CONFIG['bobina_tag']
             trigger_coil_tag = self.TAG_CONFIG.get('trigger_coil_tag', 'Coil_change')
             read_interval = self.CONNECTION_CONFIG['read_interval']
             
-            # Check for 6 AM reset
+            # Check for 7 AM reset (Brazil time)
             now_sp = get_current_sao_paulo_time()
-            if self.last_reset_date is None or now_sp.date() > self.last_reset_date:
-                if now_sp.hour >= 6:
-                    self.count_discharge_total = 0
-                    self.last_reset_date = now_sp.date()
-                    logging.info(f"[{self.plc_name}] Reset count_discharge_total at 6 AM")
+            if now_sp.hour >= 7 and (self.last_reset_date is None or self.last_reset_date < now_sp.date()):
+                self.count_discharge_total = 0
+                self.last_reset_date = now_sp.date()
+                logging.info(f"[{self.plc_name}] Reset count_discharge_total at 7 AM")
 
             if not self.data_dir or 'file_config' not in self.config:
                 logging.error(f"[{self.plc_name}] Configuration error: missing 'size_data_dir' or 'file_config'")
@@ -265,9 +331,7 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                 local_data_dir = os.path.join(script_dir, 'production_data', self.plc_name.replace(" ", "_"))
                 self.data_dir = local_data_dir  
                 os.makedirs(self.data_dir, exist_ok=True)
-                logging.info(f"[{self.plc_name}] Production data will be saved to local directory: {self.data_dir}")
-
-            
+                logging.info(f"[{self.plc_name}] Production data will be saved to local directory: {self.data_dir}")  
             if not self.connected or not self.plc:
                 if not self.attempt_plc_connection(): 
                     logging.warning(f"[{self.plc_name}] Falha ao conectar ao PLC. Tentando novamente no próximo ciclo.")
@@ -321,12 +385,23 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
             current_main_value = int((current_stroke - self.initial_stroke_counter) * current_tool_size)
             current_bobina_value = bobina_data.Value
             
+            # Atualiza o status atual de produção no banco de dados
+            if current_main_value is not None:
+                coil_num = get_lote_from_config(self.plc_name)
+                current_shift = get_current_shift()
+                DatabaseHandler.update_current_production(
+                    machine_name=self.plc_name,
+                    current_cups=current_main_value,
+                    shift=current_shift,
+                    coil_number=coil_num,
+                    feed_value=current_feed_value,
+                    size=current_cup_size,
+                    status='ATIVO',
+                    daily_total=self.count_discharge_total
+                )
+            
             # --- LÓGICA DE GRAVAÇÃO POR TURNO E LOTE (TOTVS) ---
             if current_main_value is not None:
-                # Inicializa referência na primeira leitura para evitar pico no reinício
-                if self.last_db_sync_value == 0 and current_main_value > 0:
-                    self.last_db_sync_value = current_main_value
-
                 # Se houve reset no PLC (valor atual menor que o último salvo), reseta nossa referência
                 if current_main_value < self.last_db_sync_value:
                     self.last_db_sync_value = 0
@@ -338,15 +413,15 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                     
                     if delta_producao > 0:
                         try:
-                            bobina_info = get_bobina_saida_from_config(self.plc_name)
-                            coil_num = bobina_info.get('lote', 'N/A')
+                            coil_num = get_lote_from_config(self.plc_name)
                             
                             DatabaseHandler.insert_production_record(
                                 machine_name=self.plc_name,
                                 coil_number=coil_num,
                                 cups_produced=delta_producao,
                                 consumption_type="Fechamento Turno",
-                                shift=self.current_shift_tracker # Grava no turno que encerrou
+                                shift=self.current_shift_tracker, # Grava no turno que encerrou
+                                absolute_counter=current_main_value
                             )
                             # Apenas registro no banco de dados, NÃO envia e-mail aqui.
                             self.last_db_sync_value = current_main_value
@@ -488,33 +563,58 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
             if current_trigger_coil == 1 and not self.coil_change_active:
                 self.coil_change_active = True
                 logging.info(f"[{self.plc_name}]  TRIGGER DE TROCA DE BOBINA ATIVADO (Bobina_Trocada = 1)")
-
-                # --- INÍCIO DA LÓGICA DE ENVIO DE E-MAIL E REGISTRO DE PRODUÇÃO ---
-                # O e-mail só é enviado aqui, quando há troca física de bobina.
-
                 lote_atual = get_lote_from_config(self.plc_name)
-                bobina_saida_info = get_bobina_saida_from_config(self.plc_name)
+                logging.info(f"[{self.plc_name}] 📝 Registrando produção para o lote: {lote_atual}")
                 current_shift = get_current_shift()
-
-                # Insere registro no DB
                 try:
-                    # Se houve reset no PLC antes da troca
                     if self.main_value < self.last_db_sync_value:
                         self.last_db_sync_value = 0
-                        
-                    # Calcula o delta final (o que foi produzido desde a última parcial até agora)
                     delta_final = self.main_value - self.last_db_sync_value
-                    
                     DatabaseHandler.insert_production_record(
                         machine_name=self.plc_name,
-                        coil_number=bobina_saida_info['lote'],
+                        coil_number=lote_atual,
                         cups_produced=delta_final,
                         consumption_type=self.bobina_saida,
-                        shift=self.current_shift_tracker
+                        shift=self.current_shift_tracker,
+                        absolute_counter=self.main_value
                     )
                     self.last_db_sync_value = self.main_value # Sincroniza a referência
                 except Exception as db_error:
                     logging.error(f"[{self.plc_name}] Falha ao inserir registro no banco de dados: {db_error}")
+
+                # --- NEW LOGIC FOR COIL_CONSUMPTION_LOT ---
+                # Check if there was a previous coil to finalize
+                if self.last_coil_start_time is not None and self.last_coil_lot_number is not None:
+                    # Calculate consumed quantity for the *previous* coil
+                    # This assumes main_value is cumulative for the current coil
+                    consumed_quantity_previous_coil = self.main_value - self.last_coil_start_counter if self.last_coil_start_counter is not None else self.main_value
+                    
+                    if consumed_quantity_previous_coil > 0:
+                        # Ensure we use the correct shift for the *previous* coil's end
+                        shift_for_previous_coil = self.current_shift_tracker # Use the shift that was active for the *previous* record
+
+                        DatabaseHandler.insert_coil_consumption_record(
+                            machine_name=self.plc_name,
+                            coil_id=self.last_coil_id if self.last_coil_id else f"{self.last_coil_lot_number}-{self.plc_name}-{self.last_coil_start_time.strftime('%Y%m%d%H%M%S')}", # Generate unique ID if not already available
+                            lot_number=self.last_coil_lot_number,
+                            start_time=self.last_coil_start_time,
+                            end_time=now_sao_paulo, # Current time is the end time of the previous coil
+                            consumed_quantity=consumed_quantity_previous_coil,
+                            unit="cups", # Assuming cups as unit
+                            production_date=self.last_coil_start_time.strftime('%Y-%m-%d'),
+                            shift=shift_for_previous_coil,
+                            consumption_type=self.bobina_saida # Status of the *previous* coil, if available
+                        )
+                        logging.info(f"[{self.plc_name}] 📥 Registro de consumo da bobina anterior salvo: Lote {self.last_coil_lot_number}, Qtd: {consumed_quantity_previous_coil}")
+
+                # Update tracking variables for the *new* coil that is starting
+                self.last_coil_start_time = now_sao_paulo
+                self.last_coil_lot_number = lote_atual # New lot starting
+                # Need a way to generate a unique coil ID. For now, combine lot and timestamp.
+                self.last_coil_id = f"{lote_atual}-{self.plc_name}-{now_sao_paulo.strftime('%Y%m%d%H%M%S')}"
+                self.last_coil_start_counter = self.main_value # Starting counter for the new coil
+                logging.info(f"[{self.plc_name}] 🆕 Nova bobina iniciada para rastreamento: Lote {lote_atual}")
+                # --- END NEW LOGIC ---
 
                 # Prepara dados para o relatório
                 report_data = PLCReportData(
@@ -525,7 +625,7 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
                     total_cups=self.total_cups,
                     update_time=get_current_sao_paulo_time().strftime("%d/%m/%Y %H:%M:%S"),
                     status=self.config.get('status', 'ATIVO'),
-                    bobina_saida=bobina_saida_info['lote'],
+                    bobina_saida=lote_atual,
                     bobina_consumida=self.bobina_saida,
                     current_shift=current_shift,
                     count_discharge_total=self.count_discharge_total
@@ -599,8 +699,18 @@ Total Acumulado: {"{:,}".format(self.total_cups).replace(",", ".")} copos
             self.connected = False
             raise  
 
-        
-        
+    def determine_cup_size(self, feed_value):
+        """Determina o tamanho do copo baseado no valor do feed."""
+        try:
+            # Mapeamento de faixas de feed para tamanhos de copo
+            # Baseado nos valores típicos do sistema
+            if 1.0 <= feed_value <= 30.0:
+                return '269ml'
+            else:
+                return 'desconhecido'
+        except Exception as e:
+            logging.error(f"[{self.plc_name}] Erro ao determinar tamanho do copo: {e}")
+            return 'desconhecido'
 
     def write_lote(self, lote_value):
         """(Desativado) Futuramente irá escrever o valor do lote no PLC."""

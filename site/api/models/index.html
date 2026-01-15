@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Sistema avançado de monitoramento industrial para linhas Cupper">
+        <meta name="description" content="Sistema avançado de monitoramento industrial para linhas Cupper / Advanced industrial monitoring system for Cupper lines">
       
       
         <meta name="author" content="Victor Nascimento - CANPACK Brasil">
@@ -29,7 +29,7 @@
     
     
       
-        <title>Modelos de Dados - Sistema de Monitoramento PLC - CANPACK</title>
+        <title>Modelos de Dados / Data Models - Sistema de Monitoramento PLC - CANPACK</title>
       
     
     
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Modelos de Dados
+              Modelos de Dados / Data Models
             
           </span>
         </div>
@@ -224,7 +224,7 @@
   
     
   
-  Início
+  Início / Home
 
       </a>
     </li>
@@ -243,7 +243,7 @@
           
   
   
-  Guia de Uso
+  Guia de Uso / User Guide
 
         </a>
       </li>
@@ -285,7 +285,7 @@
           
   
   
-  Manutenção
+  Manutenção / Maintenance
 
         </a>
       </li>
@@ -305,7 +305,7 @@
   
     
   
-  Sobre
+  Sobre / About
 
       </a>
     </li>
@@ -358,7 +358,7 @@
   <span class="md-ellipsis">
     
   
-    Início
+    Início / Home
   
 
     
@@ -403,7 +403,7 @@
   <span class="md-ellipsis">
     
   
-    Guia de Uso
+    Guia de Uso / User Guide
   
 
     
@@ -419,7 +419,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Guia de Uso
+    Guia de Uso / User Guide
   
 
           </label>
@@ -439,7 +439,7 @@
   <span class="md-ellipsis">
     
   
-    Visão Geral
+    Visão Geral / Overview
   
 
     
@@ -467,7 +467,7 @@
   <span class="md-ellipsis">
     
   
-    Instalação
+    Instalação / Installation
   
 
     
@@ -495,7 +495,7 @@
   <span class="md-ellipsis">
     
   
-    Configuração
+    Configuração / Configuration
   
 
     
@@ -624,7 +624,7 @@
   <span class="md-ellipsis">
     
   
-    Modelos de Dados
+    Modelos de Dados / Data Models
   
 
     
@@ -642,7 +642,7 @@
   <span class="md-ellipsis">
     
   
-    Modelos de Dados
+    Modelos de Dados / Data Models
   
 
     
@@ -672,17 +672,6 @@
     <span class="md-ellipsis">
       
         ProductionRecord
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#plcstatus" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PLCStatus
       
     </span>
   </a>
@@ -745,7 +734,7 @@
   <span class="md-ellipsis">
     
   
-    Integração TOTVS
+    Integração TOTVS / TOTVS Integration
   
 
     
@@ -798,7 +787,7 @@
   <span class="md-ellipsis">
     
   
-    Manutenção
+    Manutenção / Maintenance
   
 
     
@@ -814,7 +803,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manutenção
+    Manutenção / Maintenance
   
 
           </label>
@@ -890,7 +879,7 @@
   <span class="md-ellipsis">
     
   
-    Serviço Windows
+    Serviço Windows / Windows Service
   
 
     
@@ -925,7 +914,7 @@
   <span class="md-ellipsis">
     
   
-    Sobre
+    Sobre / About
   
 
     
@@ -969,17 +958,6 @@
     <span class="md-ellipsis">
       
         ProductionRecord
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#plcstatus" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PLCStatus
       
     </span>
   </a>
@@ -1037,127 +1015,44 @@
 
 
 <h1 id="modelos-de-dados">Modelos de Dados</h1>
-<p>Esta seção descreve as estruturas de dados (Schemas) utilizadas na API REST.</p>
 <h2 id="productionrecord">ProductionRecord</h2>
-<p>Representa um registro único de produção ou evento de troca de bobina.</p>
-<table>
-<thead>
-<tr>
-<th>Campo</th>
-<th>Tipo</th>
-<th>Descrição</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>id</code></td>
-<td>integer</td>
-<td>Identificador único sequencial (Primary Key)</td>
-</tr>
-<tr>
-<td><code>timestamp</code></td>
-<td>string</td>
-<td>Data e hora do registro (ISO 8601)</td>
-</tr>
-<tr>
-<td><code>machine_name</code></td>
-<td>string</td>
-<td>Nome da máquina (ex: <code>Cupper_22</code>)</td>
-</tr>
-<tr>
-<td><code>coil_number</code></td>
-<td>string</td>
-<td>Número do lote/bobina</td>
-</tr>
-<tr>
-<td><code>cups_produced</code></td>
-<td>integer</td>
-<td>Quantidade produzida neste registro</td>
-</tr>
-<tr>
-<td><code>consumption_type</code></td>
-<td>string</td>
-<td>Tipo do evento (<code>Completa</code>, <code>Parcial</code>, <code>Parcial (Turno)</code>)</td>
-</tr>
-<tr>
-<td><code>shift</code></td>
-<td>string</td>
-<td>Turno de produção (<code>DIA (07-19)</code> ou <code>NOITE (19-07)</code>)</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight"><span class="filename">Exemplo JSON</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1542</span><span class="p">,</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-12 14:30:00&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">&quot;machine_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cupper_22&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">&quot;coil_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;284043&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">&quot;cups_produced&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12500</span><span class="p">,</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="nt">&quot;consumption_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Completa&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">&quot;shift&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DIA (07-19)&quot;</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
-</code></pre></div>
-<h2 id="plcstatus">PLCStatus</h2>
-<p>Representa o estado atual de uma máquina em tempo real.</p>
-<table>
-<thead>
-<tr>
-<th>Campo</th>
-<th>Tipo</th>
-<th>Descrição</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>lote_atual</code></td>
-<td>string</td>
-<td>Lote configurado atualmente</td>
-</tr>
-<tr>
-<td><code>tipo_bobina</code></td>
-<td>string</td>
-<td>Tipo de material (ex: <code>M</code>, <code>L1</code>)</td>
-</tr>
-<tr>
-<td><code>bobina_saida</code></td>
-<td>string</td>
-<td>Última bobina consumida</td>
-</tr>
-<tr>
-<td><code>status_maquina</code></td>
-<td>string</td>
-<td>Status operacional (<code>ATIVO</code>, <code>PARADO</code>)</td>
-</tr>
-<tr>
-<td><code>formato</code></td>
-<td>string</td>
-<td>Formato detectado (ex: <code>350ml_STD</code>)</td>
-</tr>
-<tr>
-<td><code>feed_rate</code></td>
-<td>float</td>
-<td>Valor lido do avanço da fita</td>
-</tr>
-<tr>
-<td><code>producao_total_acumulada</code></td>
-<td>integer</td>
-<td>Contador total acumulado</td>
-</tr>
-<tr>
-<td><code>conectado</code></td>
-<td>boolean</td>
-<td>Status da conexão com o PLC</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight"><span class="filename">Exemplo JSON</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;lote_atual&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;284043&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;tipo_bobina&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;M&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;formato&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;350ml_STD&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">&quot;feed_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.5848</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">&quot;producao_total_acumulada&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1250000</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">&quot;conectado&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
-</code></pre></div>
+<p>Representa um registro único de produção ou evento de troca de bobina. / Represents a single production record or coil change event.</p>
+<p>|-------|------|-----------|
+| <code>id</code> | integer | Identificador único sequencial (Primary Key) / Unique sequential identifier |
+| <code>timeane_name</code> | string | Nome da máquina (ex: <code>Cupper_22</code>) / Machine name |
+| <code>coil_number</code> | string 
+  "timestamp": "2026-01-12 14:30:00",
+  "machine_name": "Cupper_22",
+  "coil_number": "284043",
+  "cups_produced": 12500,
+  "consumption_type": "Completa",
+  "shift": "DIA (07-19)"
+}
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>## PLCStatus
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Representa o estado atual de uma máquina em tempo real.
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>| Campo | Tipo | Descrição |
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>|-------|------|-----------|
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>| `lote_atual` | string | Lote configurado atualmente |
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>| `tipo_bobina` | string | Tipo de material (ex: `M`, `L1`) |
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>| `bobina_saida` | string | Última bobina consumida |
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>| `status_maquina` | string | Status operacional (`ATIVO`, `PARADO`) |
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>| `formato` | string | Formato detectado (ex: `350ml_STD`) |
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>| `feed_rate` | float | Valor lido do avanço da fita |
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>| `producao_total_acumulada` | integer | Contador total acumulado |
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>| `conectado` | boolean | Status da conexão com o PLC |
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>```json title=&quot;Exemplo JSON&quot;
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>{
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  &quot;lote_atual&quot;: &quot;284043&quot;,
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  &quot;tipo_bobina&quot;: &quot;M&quot;,
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  &quot;formato&quot;: &quot;350ml_STD&quot;,
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>  &quot;feed_rate&quot;: 5.5848,
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>  &quot;producao_total_acumulada&quot;: 1250000,
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>  &quot;conectado&quot;: true
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>}
+</code></pre></div></p>
 <h2 id="healthcheck">HealthCheck</h2>
 <p>Status de saúde do sistema.</p>
 <table>
@@ -1191,15 +1086,15 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><span class="filename">Exemplo JSON</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OK&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;database&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONNECTED&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&quot;plcs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;Cupper_22&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ONLINE&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">&quot;Cupper_23&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OFFLINE&quot;</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="p">},</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-12 14:30:00&quot;</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
+<div class="highlight"><span class="filename">Exemplo JSON</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OK&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;database&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONNECTED&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;plcs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">&quot;Cupper_22&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ONLINE&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">&quot;Cupper_23&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OFFLINE&quot;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-12 14:30:00&quot;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="totvsresponse">TOTVSResponse</h2>
 <p>Estrutura de resposta para a integração com ERP.</p>

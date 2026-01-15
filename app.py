@@ -21,16 +21,20 @@ from backup_utils import backup_database
 # Metadados para Documentação (Swagger)
 tags_metadata = [
     {
-        "name": "Monitoramento",
-        "description": "Visualização de dados em tempo real vindos diretamente dos PLCs.",
+        "name": "Monitoramento / Monitoring",
+        "description": "Visualização de dados em tempo real vindos diretamente dos PLCs. / Real-time data visualization directly from PLCs.",
     },
     {
-        "name": "Relatórios de Produção",
-        "description": "Consultas históricas de produção registradas a cada troca de bobina.",
+        "name": "Relatórios de Produção / Production Reports",
+        "description": "Consultas históricas de produção registradas a cada troca de bobina. / Historical production queries recorded at each coil change.",
     },
     {
-        "name": "Operação de Lotes",
-        "description": "Comandos para alteração de lotes e tipos de bobina nas máquinas.",
+        "name": "Operação de Lotes / Batch Operations",
+        "description": "Comandos para alteração de lotes e tipos de bobina nas máquinas. / Commands for changing batches and coil types on machines.",
+    },
+    {
+        "name": "Integração ERP / ERP Integration",
+        "description": "Endpoints dedicados para sincronização com sistemas externos. / Dedicated endpoints for synchronization with external systems.",
     },
 ]
 
@@ -86,14 +90,14 @@ app = FastAPI(
     title="🚀 Sistema de Extração de Dados - Canpack",
     description="""
 Monitoramento industrial avançado para linhas Cupper.
-Este sistema centraliza a coleta de dados de produção, controle de lotes e geração de relatórios automáticos.
+Este sistema centraliza a coleta de dados de produção, controle de lotes e geração de relatórios automáticos. / This system centralizes production data collection, batch control, and automatic report generation.
 
-### Categorias:
-* **Monitoramento**: Status atual de produção e conexão.
-* **Relatórios**: Dados históricos por turno e bobina.
-* **Operação**: Interface para input de novos lotes.
+### Categorias / Categories:
+* **Monitoramento / Monitoring**: Status atual de produção e conexão. / Current production and connection status.
+* **Relatórios / Reports**: Dados históricos por turno e bobina. / Historical data by shift and coil.
+* **Operação / Operation**: Interface para input de novos lotes. / Interface for new batch input.
     """,
-    version="2.1.0",
+    version="2.1.1",
     openapi_tags=tags_metadata,
     lifespan=lifespan
 )
@@ -117,8 +121,9 @@ except Exception as e:
 # Adiciona as rotas organizadas
 app.include_router(router)
 
-@app.get("/api/logs", tags=["Manutenção"])
-def get_system_logs(level: str = Query(None, description="Filtrar por nível: INFO, DEBUG, ERROR")):
+@app.get("/api/logs", tags=["Manutenção / Maintenance"])
+def get_system_logs(level: str = Query(None, description="Filtrar por nível: INFO, DEBUG, ERROR"), 
+                    limit: int = Query(500, description="Número máximo de linhas a retornar (padrão: 500)")):
     """Retorna os logs do sistema do dia atual."""
     try:
         log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
@@ -127,7 +132,8 @@ def get_system_logs(level: str = Query(None, description="Filtrar por nível: IN
         if not os.path.exists(log_file):
             return {"error": "Arquivo de log não encontrado para hoje."}
             
-        logs = []
+        from collections import deque
+        logs = deque(maxlen=limit)
         with open(log_file, 'r', encoding='utf-8') as f:
             for line in f:
                 if level:
@@ -136,7 +142,7 @@ def get_system_logs(level: str = Query(None, description="Filtrar por nível: IN
                 else:
                     logs.append(line.strip())
                     
-        return {"count": len(logs), "logs": logs}
+        return {"count": len(logs), "logs": list(logs)}
     except Exception as e:
         return {"error": f"Erro ao ler logs: {str(e)}"}
 

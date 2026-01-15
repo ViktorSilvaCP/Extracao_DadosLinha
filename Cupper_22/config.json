@@ -11,7 +11,7 @@
         "bobina_tag": "Bobina_Consumida",
         "trigger_coil_tag": "Bobina_Trocada",
         "lote_tag": "Cupper22_Bobina_Consumida_Serial",
-        "stroke_tag": "IGN_Total_Stroke_Counter",
+        "stroke_tag": "oHMI_Daily_Stroke_Count",
         "tool_size_tag": "IGN_Tool_Size"
     },
     "shift_config": {
@@ -56,10 +56,10 @@
     },
     "status": "ONLINE",
     "lote_config": {
-        "current_lote": "284043",
-        "last_updated": "06/10/2025 09:44:52",
-        "bobina_saida": "279254",
-        "data_saida": "06/10/2025 09:44:52",
-        "tipo_bobina": "M"
+        "current_lote": "306291",
+        "last_updated": "15/01/2026 11:42:45",
+        "bobina_saida": "299534",
+        "data_saida": "15/01/2026 11:42:45",
+        "tipo_bobina": "L1"
     }
 }
