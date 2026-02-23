@@ -66,8 +66,6 @@ async def lifespan(app: FastAPI):
     setup_logging()
     logging.info("Iniciando sistema...")
     DatabaseHandler.init_db()
-    
-    # Semeia PLCs se a tabela estiver vazia (Garante escalabilidade inicial)
     existing_plcs = DatabaseHandler.get_all_plcs()
     if not existing_plcs:
         logging.info("Semeando PLCs iniciais (Cupper_22/23)...")
@@ -107,16 +105,11 @@ async def lifespan(app: FastAPI):
 
     shared_data = SharedPLCData()
     monitor_manager = PLCMonitorManager(shared_data)
-    
-    # Realiza backup preventivo na inicialização
     backup_database()
-    
-    # Converte PLCs do banco para o formato esperado pela API/Monitor
     plc_configs_db = {}
     plcs_to_monitor = []
     
     for plc in existing_plcs:
-        # Configuração padrão base
         merged_config = {
             "plc_config": {
                 "ip_address": plc['ip'],
@@ -164,7 +157,6 @@ async def lifespan(app: FastAPI):
     yield
 
 # Configuração da aplicação
-# Middleware de Segurança Personalizado / Custom Security Middleware
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
@@ -173,7 +165,6 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*; style-src 'self' 'unsafe-inline' https://*; font-src 'self' data: https://*; img-src 'self' data: https://*;"
-        # Remove uvicorn/fastapi headers
         if "X-Powered-By" in response.headers:
             del response.headers["X-Powered-By"]
         return response
@@ -192,15 +183,12 @@ Este sistema centraliza a coleta de dados de produção, controle de lotes e ger
     version=os.getenv("APP_VERSION", "1.0.0"),
     openapi_tags=tags_metadata,
     lifespan=lifespan,
-    docs_url="/api/docs",  # Moved docs for obscurity
+    docs_url="/api/docs",
     redoc_url=None
 )
 
-# 1. Trava de Hosts Conhecidos (Anti-Host Header Injection)
 allowed_hosts = os.getenv("ALLOWED_HOSTS", "*").split(",")
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
-
-# 2. CORS (Cross-Origin Resource Sharing)
 allow_origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
@@ -209,11 +197,8 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
-
-# 3. Headers de Segurança (Anti-XSS, Anti-Clickjacking)
 app.add_middleware(SecurityHeadersMiddleware)
 
-# Monta arquivos estáticos
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 try:
     print("Gerando documentação MkDocs...")
