@@ -56,12 +56,12 @@ def should_send_email(plcs_list_for_report, lock_dir):
         return True
 
 def get_current_shift():
-    """Retorna o turno atual baseado nas regras: Dia (07-19), Noite (19-07)."""
+    """Retorna o turno atual baseado nas regras: Dia (06-18), Noite (18-06)."""
     from timezone_utils import get_current_sao_paulo_time
     now = get_current_sao_paulo_time()
     hour = now.hour
     
-    if 7 <= hour < 19:
-        return "DIA (07-19)"
+    if 6 <= hour < 18:
+        return "DIA (06-18)"
     else:
-        return "NOITE (19-07)"
+        return "NOITE (18-06)"

@@ -813,6 +813,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#identidade-e-seguranca" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identidade e Segurança
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Identidade e Segurança">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#informacoes-do-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Informações do Cliente
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#codigos-de-status-http" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1278,6 +1306,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#identidade-e-seguranca" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identidade e Segurança
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Identidade e Segurança">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#informacoes-do-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Informações do Cliente
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#codigos-de-status-http" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1638,7 +1694,7 @@
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:3"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><input id="__tabbed_7_3" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Request</label><label for="__tabbed_7_2">Response 200</label><label for="__tabbed_7_3">Response 400</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:3"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><input id="__tabbed_7_3" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Request</label><label for="__tabbed_7_2">Response 200</label><label for="__tabbed_7_3">Response 403 (Forbidden)</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nf">POST</span> <span class="nn">/enviar_lote</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1649,13 +1705,41 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Lote 284043 processado com sucesso para Cupper_22.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">{</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;✅ Lote 284043 processado com sucesso para Cupper_22.&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="nt">&quot;plc_written&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">}</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">{</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;O código do lote deve ter pelo menos 3 caracteres.&quot;</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="p">}</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Acesso Negado: Este terminal não possui um token de autorização válido. Entre em contato com o suporte para autorizar este computador.&quot;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Token Authorization</p>
+<p>Este endpoint possui uma trava de segurança baseada em <strong>Token (LocalStorage)</strong>. Somente terminais autorizados que possuam o token <code>CANPACK_PROD_2026_AUTHORIZATION</code> podem realizar esta operação. Localhost (<code>127.0.0.1</code>) é autorizado por padrão.</p>
+</div>
+<hr />
+<h2 id="identidade-e-seguranca">Identidade e Segurança</h2>
+<h3 id="informacoes-do-cliente">Informações do Cliente</h3>
+<p>Retorna a identidade resolvida do computador que está realizando a chamada.</p>
+<div class="admonition example">
+<p class="admonition-title">GET <code>/api/client_info</code></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Response</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PC-PRODUCAO-01&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">&quot;ip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10.81.19.12&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span><span class="nt">&quot;authorized&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">}</span>
 </code></pre></div>
 </div>
 </div>
@@ -1681,6 +1765,11 @@
 <td>400</td>
 <td>Bad Request</td>
 <td>Parâmetros inválidos</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden</td>
+<td>Acesso negado (terminal não autorizado)</td>
 </tr>
 <tr>
 <td>404</td>

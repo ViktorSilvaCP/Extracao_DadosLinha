@@ -1,224 +1,353 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inserir Lote | Sistema de Bobinas</title>
-    <script src="assets/js/3.4.17"></script>
+    <title>Terminal Operacional | Sistema de Bobinas</title>
+    <script src="assets/js/tailwind.min.js"></script>
     <link rel="stylesheet" href="assets/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/css2.css">
+    <link rel="stylesheet" href="assets/css/outfit.css">
+
     <style>
+        :root {
+            --primary: #1e3a8a;
+            /* Darker Navy Blue for Brand Identity */
+            --primary-light: #3b82f6;
+            --bg-gradient: radial-gradient(circle at 0% 0%, #f8fafc 0%, #e2e8f0 100%);
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
-        .gradient-bg {
-            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
         }
 
-        .input-focus:focus {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        /* Input Styling */
+        .modern-input {
+            background: rgba(241, 245, 249, 0.5);
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .shake {
-            animation: shake 0.5s;
+        .modern-input:focus {
+            background: #fff;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            transform: translateY(-1px);
         }
 
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            20%,
-            60% {
-                transform: translateX(-5px);
-            }
-
-            40%,
-            80% {
-                transform: translateX(5px);
-            }
+        /* Industrial Lote Input */
+        #lote {
+            letter-spacing: 0.15em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .lote-preview {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border: 1px solid #0ea5e9;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 8px;
+        /* Access Restricted State */
+        .restricted-mode {
+            background: rgba(245, 158, 11, 0.05);
+            /* Amber 50 bg */
+            border-color: rgba(245, 158, 11, 0.2);
         }
 
-        .lote-preview h4 {
-            color: #0369a1;
-            font-size: 14px;
+        .restricted-text {
+            color: #d97706;
+            /* Amber 600 */
+        }
+
+        /* Line Specific Accents */
+        .line-22-accent {
+            border-left: 6px solid #4f46e5;
+        }
+
+        /* Indigo 600 */
+        .line-23-accent {
+            border-left: 6px solid #0891b2;
+        }
+
+        /* Cyan 600 */
+
+        /* Enhanced Labels */
+        .label-factory {
+            color: #64748b;
+            /* Slate 500 - Higher contrast than 400 */
+            font-weight: 700;
+        }
+
+        /* Secondary Data */
+        .data-secondary {
+            color: #475569;
+            /* Slate 600 */
             font-weight: 600;
-            margin-bottom: 4px;
         }
 
-        .lote-preview .lote-value {
-            color: #0c4a6e;
-            font-size: 16px;
-            font-weight: bold;
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
         }
 
-        .lote-preview .lote-time {
-            color: #0891b2;
-            font-size: 11px;
-            margin-top: 2px;
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
         }
 
-        .detection-indicator {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #10b981;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
         }
 
-        .detection-indicator.active {
-            opacity: 1;
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        .sidebar-item-active {
+            border-left: 4px solid var(--primary);
+            background: linear-gradient(90deg, rgba(79, 70, 229, 0.05) 0%, transparent 100%);
+        }
+
+        .card-stats {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .card-stats:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+            border-color: var(--primary-light);
         }
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-        <div class="gradient-bg text-white rounded-t-xl p-6 shadow-lg">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-2xl font-bold">Inserir Lote</h1>
-                    <p class="text-blue-100">Sistema de Controle de Bobinas</p>
-                </div>
-                <div class="bg-white/20 p-3 rounded-full">
-                    <i class="fas fa-barcode text-xl"></i>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white rounded-b-xl shadow-lg p-6">
-            <form id="loteForm" class="space-y-5">
-                <div>
-                    <label for="lote" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <i class="fas fa-barcode mr-2 text-blue-500"></i>
-                        Código de Barras do Lote
-                    </label>
-                    <div class="relative">
-                        <input type="text" id="lote" name="lote" required maxlength="6"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition"
-                            placeholder="Digite ou escaneie o código (6 números)">
-                        <div class="detection-indicator" id="detectionIndicator">
-                            <i class="fas fa-check"></i>
+<body class="lg:p-0">
+    <div
+        class="w-full min-h-screen lg:h-screen flex flex-col glass-panel overflow-hidden border-none rounded-none lg:rounded-none">
+
+        <div class="flex flex-col lg:flex-row h-full overflow-hidden">
+
+            <aside
+                class="w-full lg:w-[400px] flex-shrink-0 bg-white/50 border-r border-slate-200/60 flex flex-col h-full overflow-hidden">
+
+                <div class="flex-grow overflow-y-auto custom-scroll">
+
+                    <div class="p-8 border-b border-slate-100">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div
+                                class="w-10 h-10 bg-blue-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                                <i class="fas fa-layer-group text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-blue-700 leading-none">
+                                    Smart Factory</p>
+                                <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">Log de Bobinas</h1>
+                            </div>
                         </div>
-                        <button type="button" class="absolute right-3 top-2 text-gray-400 hover:text-blue-500">
-                            <i class="fas fa-camera"></i>
+
+                        <form id="loteForm" class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-[11px] uppercase tracking-wider label-factory ml-1">Código
+                                    do
+                                    Lote</label>
+                                <div class="relative">
+                                    <input type="text" id="lote" name="lote" maxlength="20" required
+                                        class="modern-input w-full px-6 py-4 rounded-2xl text-3xl font-black text-slate-700 placeholder:text-slate-200 outline-none uppercase"
+                                        placeholder="000000">
+                                    <div id="detectionIndicator"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center scale-0 transition-transform duration-300">
+                                        <i class="fas fa-check text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[11px] uppercase tracking-wider label-factory ml-1">Linha
+                                        de Produção</label>
+                                    <select id="plc" name="plc" required
+                                        class="modern-input w-full px-5 py-4 rounded-2xl font-semibold text-slate-600 outline-none appearance-none cursor-pointer">
+                                        <option value="">Selecione a Linha...</option>
+                                        <option value="Cupper_22">CUPPER 22</option>
+                                        <option value="Cupper_23">CUPPER 23</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[11px] uppercase tracking-wider label-factory ml-1">Especificação</label>
+                                    <select id="tipo_bobina" name="tipo_bobina" required
+                                        class="modern-input w-full px-5 py-4 rounded-2xl font-semibold text-slate-600 outline-none appearance-none cursor-pointer">
+                                        <option value="">Espessura...</option>
+                                        <option value="L1">L1</option>
+                                        <option value="L2">L2</option>
+                                        <option value="L3">L3</option>
+                                        <option value="M">M</option>
+                                        <option value="H1">H1</option>
+                                        <option value="H2">H2</option>
+                                        <option value="H3">H3</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="submitBtn"
+                                class="w-full py-4 bg-blue-900 hover:bg-blue-950 text-white rounded-2xl font-bold uppercase tracking-widest text-sm shadow-xl shadow-blue-100 transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+                                <i class="fas fa-paper-plane"></i> Transmitir Lote
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="p-6 bg-slate-50/50 border-t border-slate-100 items-center">
+                        <div id="unauthorizedWarning"
+                            class="hidden mb-4 p-3 rounded-xl bg-amber-50 border border-amber-100 flex items-start gap-3">
+                            <i class="fas fa-shield-alt text-amber-500 mt-0.5"></i>
+                            <p class="text-[10px] text-amber-700 leading-tight font-medium">Este terminal está em
+                                <b>Modo Leitura</b>. A transmissão foi bloqueada por falta de token de autorização.
+                            </p>
+                        </div>
+                        <div class="flex flex-col gap-1 mb-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-tight">ID
+                                    Terminal:</span>
+                                <div class="flex gap-2 items-center">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span class="text-[9px] font-bold text-slate-500 uppercase">Sistema Online</span>
+                                </div>
+                            </div>
+                            <span id="clientInfo"
+                                class="text-[10px] font-black text-blue-900 truncate tracking-tight">Identificando...</span>
+                        </div>
+                        <a href="/documentation/" target="_blank"
+                            class="w-full py-2 bg-white/50 border border-slate-100 rounded-lg text-[10px] font-bold text-blue-900 hover:bg-blue-50 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-book-open text-[8px]"></i> DOCUMENTAÇÃO DO SISTEMA
+                        </a>
+                    </div>
+            </aside>
+
+            <main class="flex-grow flex flex-col overflow-hidden bg-slate-50/30">
+
+                <header class="p-8 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-1">Monitoramento em
+                            Tempo Real</h2>
+                        <div class="h-1 w-12 bg-blue-900 rounded-full"></div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right hidden md:block">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Última
+                                Atualização</p>
+                            <span id="lastUpdate" class="text-[10px] font-black text-slate-500">---</span>
+                        </div>
+                        <button onclick="window.location.reload()"
+                            class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:shadow-md transition-all active:scale-95 group"
+                            title="Atualizar Dados">
+                            <i
+                                class="fas fa-sync-alt text-lg group-hover:rotate-180 transition-transform duration-500"></i>
                         </button>
                     </div>
-                    <p class="mt-1 text-xs text-gray-500">Apenas 6 números (ex: 123456)</p>
-                </div>
-                <div>
-                    <label for="plc" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <i class="fas fa-industry mr-2 text-blue-500"></i>
-                        Linha de Produção
-                    </label>
-                    <select id="plc" name="plc" required
-                        class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white appearance-none"
-                        onchange="loadCurrentLote()">
-                        <option value="">Selecione uma linha</option>
-                        <option value="Cupper_22">Linha 22 - Cupper</option>
-                        <option value="Cupper_23">Linha 23 - Cupper</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="tipo_bobina" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <i class="fas fa-tape mr-2 text-blue-500"></i>
-                        espessura da Bobina
-                    </label>
-                    <select id="tipo_bobina" name="tipo_bobina" required
-                        class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white appearance-none">
-                        <option value="">Selecione a espessura</option>
-                        <option value="L3">L3</option>
-                        <option value="L2">L2</option>
-                        <option value="L1">L1</option>
-                        <option value="M">M</option>
-                        <option value="H1">H1</option>
-                        <option value="H2">H2</option>
-                        <option value="H3">H3</option>
-                    </select>
-                </div>
-                <div id="bothLotesPreview" class="lote-preview">
-                    <h4 class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 mr-2 text-cyan-700" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
-                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-                        </svg>Status das Linhas</h4>
-                    <div class="grid grid-cols-2 gap-4 mt-2">
+                </header>
 
-                        <div>
-                            <div class="text-sm font-semibold text-gray-700 mb-1">Linha 22</div>
-                            <div class="text-xs text-gray-600">Lote Atual:</div>
-                            <div class="lote-value" id="lote_atual_22">-</div>
-                            <div class="text-xs text-gray-600 mt-2">Última Bobina:</div>
-                            <div class="lote-value" id="bobina_saida_22">-</div>
-                            <div class="lote-time" id="data_saida_22">-</div>
+                <div class="flex-grow overflow-y-auto custom-scroll px-8 pb-8">
+
+                    <div id="bothLotesPreview" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-slide-up">
+
+                        <div
+                            class="card-stats bg-white p-6 rounded-[2rem] relative overflow-hidden group line-22-accent shadow-sm">
+                            <div class="absolute top-0 right-0 p-4">
+                                <span
+                                    class="bg-indigo-50 text-indigo-600 text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">CUPPER
+                                    22</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Lote Atual em
+                                Produção</p>
+                            <h3 id="lote_atual_22"
+                                class="text-5xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors">
+                                ---</h3>
+
+                            <div class="mt-8 pt-6 border-t border-slate-50 flex justify-between">
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-tight">Última
+                                        Bobina Saída</p>
+                                    <p id="bobina_saida_22" class="text-sm font-black text-slate-600">---</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-tight">
+                                        Sincronização</p>
+                                    <p id="data_saida_22" class="font-bold text-slate-500 text-[11px]">---</p>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="text-sm font-semibold text-gray-700 mb-1">Linha 23</div>
-                            <div class="text-xs text-gray-600">Lote Atual:</div>
-                            <div class="lote-value" id="lote_atual_23">-</div>
-                            <div class="text-xs text-gray-600 mt-2">Última Bobina:</div>
-                            <div class="lote-value" id="bobina_saida_23">-</div>
-                            <div class="lote-time" id="data_saida_23">-</div>
+
+                        <div
+                            class="card-stats bg-white p-6 rounded-[2rem] relative overflow-hidden group line-23-accent shadow-sm">
+                            <div class="absolute top-0 right-0 p-4">
+                                <span
+                                    class="bg-cyan-50 text-cyan-600 text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">CUPPER
+                                    23</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Lote Atual em
+                                Produção</p>
+                            <h3 id="lote_atual_23"
+                                class="text-5xl font-black text-slate-800 group-hover:text-cyan-600 transition-colors">
+                                ---</h3>
+
+                            <div class="mt-8 pt-6 border-t border-slate-50 flex justify-between">
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-tight">Última
+                                        Bobina Saída</p>
+                                    <p id="bobina_saida_23" class="text-sm font-black text-slate-600">---</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-tight">
+                                        Sincronização</p>
+                                    <p id="data_saida_23" class="font-bold text-slate-500 text-[11px]">---</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div id="currentLoteInfo" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h4 class="text-sm font-medium text-blue-800">Lote Atual</h4>
-                            <p id="currentLoteText" class="text-lg font-bold text-blue-900">-</p>
+
+                    <div id="noSelectionState"
+                        class="border-2 border-dashed border-slate-200 rounded-[3rem] p-12 flex flex-col items-center justify-center text-center bg-white/40">
+                        <div
+                            class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4 text-slate-200">
+                            <i class="fas fa-chart-line text-2xl"></i>
                         </div>
-                        <div class="text-right">
-                            <p class="text-xs text-blue-600">Última atualização</p>
-                            <p id="lastUpdateTime" class="text-xs text-blue-600">-</p>
-                        </div>
+                        <h4 class="text-slate-400 font-bold uppercase tracking-widest text-xs">Aguardando Seleção de
+                            Linha</h4>
+                        <p class="text-slate-300 text-sm max-w-xs mx-auto mt-2">Selecione uma linha industrial para
+                            carregar o histórico detalhado de produção.</p>
                     </div>
+
+                    <section id="datasulReport" class="hidden animate-slide-up">
+                        <div class="flex items-center gap-4 mb-6">
+                            <h2 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 whitespace-nowrap">
+                                Reporte Datasul</h2>
+                            <div class="h-px w-full bg-slate-200"></div>
+                        </div>
+                        <div id="datasulContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        </div>
+                    </section>
+
                 </div>
-                <div class="pt-2">
-                    <button type="submit" id="submitBtn"
-                        class="w-full gradient-bg text-white py-3 px-4 rounded-lg font-medium hover:opacity-90 transition flex items-center justify-center">
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        Enviar Lote
-                    </button>
-                </div>
-            </form>
-            <div class="mt-6 pt-6 border-t border-gray-200">
-                <div class="flex items-center justify-between text-sm">
-                    <a href="http://10.81.5.219:15789/documentation/" target="_blank"
-                        class="text-blue-600 hover:text-blue-800 flex items-center">
-                        <i class="fas fa-book mr-1"></i>
-                        Documentação Completa
-                    </a>
-                    <a href="#" class="text-gray-600 hover:text-gray-800 flex items-center">
-                        <i class="fas fa-question-circle mr-1"></i>
-                        Ajuda
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="mt-4 text-center text-xs text-gray-500">
-            <p>Sistema de Controle de Bobinas v1.2.0</p>
+            </main>
         </div>
     </div>
     <script>
@@ -229,7 +358,8 @@
         function detectNumberInput(event) {
             const key = event.key;
             const loteInput = document.getElementById('lote');
-            const detectionIndicator = document.getElementById('detectionIndicator');
+
+            // Permite teclas de controle
             if (event.ctrlKey || event.altKey || event.metaKey) {
                 return;
             }
@@ -237,14 +367,15 @@
             if (allowedKeys.includes(key)) {
                 return;
             }
-            if (detectedNumbers.length >= 6 && key !== 'Backspace' && key !== 'Delete') {
-                event.preventDefault();
-                return;
-            }
-            if (/^\d$/.test(key)) {
 
+            // Remove a trava de 6 dígitos que bloqueava a digitação
+            // Agora confiamos no maxlength=20 do HTML e na sanitização do evento input
+
+            // Permite Letras, Números e Hífen (para suportar formato Chinês)
+            if (/^[a-zA-Z0-9\-]$/.test(key)) {
                 return;
             } else {
+                // Bloqueia outros caracteres especiais
                 event.preventDefault();
             }
         }
@@ -287,21 +418,25 @@
                 const data = await response.json();
 
                 if (data.dados_plcs) {
+                    const formatData = (val) => (!val || val === '000000' || val === '0') ? '---' : val;
 
                     const plc22 = data.dados_plcs['Cupper_22'];
                     if (plc22) {
-                        document.getElementById('lote_atual_22').textContent = plc22.lote_atual || 'N/A';
-                        document.getElementById('bobina_saida_22').textContent = plc22.bobina_saida || 'N/A';
-                        document.getElementById('data_saida_22').textContent = plc22.data_bobina_saida || 'Nenhuma data';
+                        document.getElementById('lote_atual_22').textContent = formatData(plc22.lote_atual);
+                        document.getElementById('bobina_saida_22').textContent = formatData(plc22.bobina_saida);
+                        document.getElementById('data_saida_22').textContent = plc22.data_bobina_saida || 'Aguardando...';
                     }
-
 
                     const plc23 = data.dados_plcs['Cupper_23'];
                     if (plc23) {
-                        document.getElementById('lote_atual_23').textContent = plc23.lote_atual || 'N/A';
-                        document.getElementById('bobina_saida_23').textContent = plc23.bobina_saida || 'N/A';
-                        document.getElementById('data_saida_23').textContent = plc23.data_bobina_saida || 'Nenhuma data';
+                        document.getElementById('lote_atual_23').textContent = formatData(plc23.lote_atual);
+                        document.getElementById('bobina_saida_23').textContent = formatData(plc23.bobina_saida);
+                        document.getElementById('data_saida_23').textContent = plc23.data_bobina_saida || 'Aguardando...';
                     }
+
+                    // Atualiza timestamp
+                    const now = new Date();
+                    document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('pt-BR');
                 }
             } catch (error) {
                 console.error('Erro ao carregar lotes:', error);
@@ -318,6 +453,7 @@
         function submitForm() {
             const form = document.getElementById('loteForm');
             const formData = new FormData(form);
+            const token = localStorage.getItem('terminal_auth_token') || '';
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processando...';
@@ -325,12 +461,16 @@
 
             fetch('/enviar_lote', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: {
+                    'X-Terminal-Token': token
+                }
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         alert(data.message);
+                        loadDatasulReport(); // Atualiza reporte após envio
                         window.location.reload();
                     } else {
                         alert('Erro: ' + data.message);
@@ -354,16 +494,69 @@
         document.getElementById('lote').addEventListener('input', function () {
             this.classList.remove('border-red-500');
 
+            let value = this.value.toUpperCase();
 
-            const value = this.value.replace(/\D/g, '').substring(0, 6);
+            // Detecta se é formato chinês (contém letras ou hífen) ou nacional (só números)
+            const isChinese = /[A-Z\-]/.test(value);
 
+            if (isChinese || value.length > 6) {
+                // Formato Chinês: Limpa para reformatar
+                // Remove tudo que não for Alfanumérico
+                let cleanValue = value.replace(/[^A-Z0-9]/g, '');
+
+                // Limita aos 12 caracteres úteis (11 prefixo + 1 sufixo)
+                cleanValue = cleanValue.substring(0, 12);
+
+                // Aplica máscara automática: XXXXXXXXXXX-L
+                if (cleanValue.length > 11) {
+                    // Pega o sufixo (12º char)
+                    let suffix = cleanValue.substring(11, 12);
+
+                    // Validação Estrita: O sufixo TEM que ser letra (A-Z)
+                    if (/[A-Z]/.test(suffix)) {
+                        value = cleanValue.substring(0, 11) + '-' + suffix;
+                    } else {
+                        // Se não for letra, ignora o caractere inválido
+                        value = cleanValue.substring(0, 11);
+                    }
+                } else {
+                    value = cleanValue;
+                }
+
+                // TRAVA RÍGIDA: Máximo 13 caracteres no total (XXXXXXXXXXX-L)
+                value = value.substring(0, 13);
+                this.placeholder = "25608813CB0-A";
+            } else {
+                // Formato Nacional: Apenas números
+                // Limitamos temporariamente a 13 para permitir que o usuário digite
+                // caso decida virar um código chinês numérico
+                value = value.replace(/[^0-9]/g, '').substring(0, 13);
+
+                // Se o usuário digitar o 7º número, ele está convertendo para chinês
+                // Mas no formato nacional só aceitamos 6.
+                // O código acima isChinese || value.length > 6 já lidou com a transição
+
+                if (value.length > 6) {
+                    this.placeholder = "25608813CB0-A";
+                } else {
+                    this.placeholder = "000000";
+                }
+            }
 
             this.value = value;
             detectedNumbers = value;
 
-
             const detectionIndicator = document.getElementById('detectionIndicator');
-            if (value.length === 6) {
+
+            // Validação FINAL RIGOROSA: 
+            // 1. Nacional: Exatamente 6 dígitos
+            // 2. Chinês: Exatamente 13 caracteres (11 alfanum + traço + 1 Letra)
+            const isNationalExact = /^\d{6}$/.test(value);
+            const isChineseExact = /^[A-Z0-9]{11}-[A-Z]{1}$/.test(value);
+
+            const isValid = isNationalExact || isChineseExact;
+
+            if (isValid) {
                 detectionIndicator.classList.add('active');
                 setTimeout(() => {
                     processDetectedLote();
@@ -372,15 +565,16 @@
                 detectionIndicator.classList.remove('active');
             }
 
-
             if (value.length === 0) {
                 detectionIndicator.classList.remove('active');
+                this.placeholder = "000000";
             }
         });
 
         document.getElementById('plc').addEventListener('change', function () {
             this.classList.remove('border-red-500');
             loadCurrentLote();
+            loadDatasulReport();
         });
 
 
@@ -389,9 +583,15 @@
 
             const loteInput = document.getElementById('lote');
             const plcInput = document.getElementById('plc');
+            const loteValue = loteInput.value;
 
-            if (loteInput.value.length !== 6 || plcInput.value === "") {
-                if (loteInput.value.length !== 6) {
+            // Valida formato: 6 dígitos (nacional) OU alfanumérico com 8-20 caracteres (chinês)
+            const isNational = /^\d{6}$/.test(loteValue);
+            const isChinese = /^[A-Z0-9\-]{8,20}$/.test(loteValue);
+            const isValidLote = isNational || isChinese;
+
+            if (!isValidLote || plcInput.value === "") {
+                if (!isValidLote) {
                     loteInput.classList.add('border-red-500', 'shake');
                     setTimeout(() => {
                         loteInput.classList.remove('shake');
@@ -411,63 +611,258 @@
 
         async function loadCurrentLote() {
             const plcSelect = document.getElementById('plc');
-            const loteInfo = document.getElementById('currentLoteInfo');
             const bothPreview = document.getElementById('bothLotesPreview');
-            const loteText = document.getElementById('currentLoteText');
-            const updateTime = document.getElementById('lastUpdateTime');
+            const emptyState = document.getElementById('noSelectionState');
 
-            if (!plcSelect.value) {
-
-                bothPreview.classList.remove('hidden');
-                loteInfo.classList.add('hidden');
+            // Se não houver linha selecionada, mostra o resumo de ambas
+            if (!plcSelect || !plcSelect.value) {
+                if (bothPreview) bothPreview.classList.remove('hidden');
+                if (emptyState) emptyState.classList.remove('hidden');
                 loadBothLotes();
                 return;
             }
-
-
-            bothPreview.classList.add('hidden');
-            loteInfo.classList.remove('hidden');
-
-            try {
-                const response = await fetch(`/api/lote/${encodeURIComponent(plcSelect.value)}`);
-                const data = await response.json();
-
-                if (data.lote_atual && data.lote_atual !== 'Nenhum lote definido') {
-                    loteText.textContent = data.lote_atual;
-                    updateTime.textContent = data.ultima_atualizacao;
-                } else {
-                    loteText.textContent = 'Nenhum lote definido';
-                    updateTime.textContent = '-';
-                }
-            } catch (error) {
-                console.error('Erro ao carregar lote atual:', error);
-                loteText.textContent = 'Erro ao carregar';
-                updateTime.textContent = '-';
-            }
+            loadBothLotes();
         }
 
 
+        async function loadDatasulReport() {
+            const reportDiv = document.getElementById('datasulReport');
+            const contentDiv = document.getElementById('datasulContent');
+            const plcSelect = document.getElementById('plc');
+            const selectedPLC = plcSelect.value;
+
+            try {
+                // Busca sem parâmetros para pegar o dia industrial atual (Now)
+                let url = '/api/datasul/producao';
+                if (selectedPLC) {
+                    const machineName = selectedPLC.replace('Cupper_', '');
+                    url += `?machine_name=${encodeURIComponent(machineName)}`;
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    reportDiv.classList.remove('hidden');
+                    const emptyState = document.getElementById('noSelectionState');
+                    if (emptyState) emptyState.classList.add('hidden');
+
+                    // Agrupar por Turno e Máquina (limitado ao dia atual pelo backend)
+                    const grouped = {};
+                    data.results.forEach(record => {
+                        const key = `${record.maquina}|${record.turno}`;
+                        if (!grouped[key]) {
+                            grouped[key] = {
+                                maquina: record.maquina,
+                                turno: record.turno,
+                                data_turno: record.data_turno,
+                                quantidade_total: 0,
+                                ultimo_lote: record.lote,
+                                ultima_hora: record.data_hora_real,
+                                tipo_saida: record.tipo_saida
+                            };
+                        }
+                        grouped[key].quantidade_total += record.quantidade;
+                        grouped[key].ultimo_lote = record.lote;
+                        grouped[key].ultima_hora = record.data_hora_real;
+                        grouped[key].tipo_saida = record.tipo_saida;
+                    });
+
+                    const resultsArray = Object.values(grouped).sort((a, b) => b.ultima_hora.localeCompare(a.ultima_hora));
+
+                    contentDiv.innerHTML = resultsArray.map(summary => {
+                        const isOffline = (new Date() - new Date(summary.ultima_hora.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'))) > (1000 * 60 * 60); // Mais de 1h sem update
+                        const statusColor = isOffline ? 'bg-rose-500' : 'bg-indigo-600';
+
+                        return `
+                        <div class="report-card p-4 hover:shadow-lg transition-all border-l-4 ${isOffline ? 'border-l-rose-500' : 'border-l-indigo-500'} bg-white group">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <span class="${statusColor} text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">${summary.maquina}</span>
+                                    <h5 class="text-xs font-black text-slate-700 mt-2">${summary.turno}</h5>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] font-bold text-slate-500 block leading-tight">${summary.data_turno}</span>
+                                    <span class="text-[9px] font-bold text-slate-400"><i class="far fa-clock mr-1"></i>${summary.ultima_hora.split(' ')[1]}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-end justify-between bg-slate-50/50 p-2 rounded-xl border border-slate-100/50">
+                                <div>
+                                    <span class="text-[8px] font-black uppercase text-slate-400 tracking-tighter">Último Lote</span>
+                                    <div class="text-sm font-black text-slate-700">${summary.ultimo_lote}</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[8px] font-black uppercase text-indigo-400 tracking-tighter">Total Acumulado</span>
+                                    <div class="text-xl font-black text-indigo-600 leading-none">${summary.quantidade_total.toLocaleString('pt-BR')}</div>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-2 flex items-center justify-between">
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">${summary.tipo_saida}</span>
+                                <div class="flex gap-1.5 h-1">
+                                    <div class="w-4 h-full rounded-full ${statusColor} opacity-20"></div>
+                                    <div class="w-1 h-full rounded-full ${statusColor} opacity-40"></div>
+                                    <div class="w-1 h-full rounded-full ${statusColor}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `}).join('');
+                } else {
+                    reportDiv.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar reporte Datasul:', error);
+                reportDiv.classList.add('hidden');
+            }
+        }
+
+        async function checkPermissions() {
+            const clientInfoSpan = document.getElementById('clientInfo');
+            const submitBtn = document.getElementById('submitBtn');
+            const statusDot = document.querySelector('.animate-pulse');
+            const statusText = document.querySelector('.text-slate-500.uppercase');
+            const loteInput = document.getElementById('lote');
+            const tipoBobinaInput = document.getElementById('tipo_bobina');
+
+            // Pega o token do localStorage
+            const token = localStorage.getItem('terminal_auth_token') || '';
+
+            try {
+                const response = await fetch('/api/client_info', {
+                    headers: { 'X-Terminal-Token': token }
+                });
+                const data = await response.json();
+
+                if (clientInfoSpan) {
+                    clientInfoSpan.textContent = `${data.hostname} (${data.ip})`;
+                }
+
+                const unauthorizedWarning = document.getElementById('unauthorizedWarning');
+
+                if (!data.authorized) {
+                    // Update UI to show Read-Only/Unauthorized state
+                    if (statusDot) {
+                        statusDot.classList.replace('bg-emerald-500', 'bg-amber-500');
+                    }
+                    if (statusText) {
+                        statusText.textContent = 'Modo Leitura / Restrito';
+                        statusText.classList.remove('text-slate-500');
+                        statusText.classList.add('text-amber-600', 'font-black');
+                    }
+                    if (unauthorizedWarning) {
+                        unauthorizedWarning.classList.remove('hidden');
+                    }
+
+                    // Bloqueia Inputs
+                    if (loteInput) {
+                        loteInput.disabled = true;
+                        loteInput.placeholder = "BLOQUEADO";
+                        loteInput.classList.add('opacity-50', 'cursor-not-allowed', 'restricted-mode');
+                    }
+                    if (tipoBobinaInput) {
+                        tipoBobinaInput.disabled = true;
+                        tipoBobinaInput.classList.add('opacity-50', 'cursor-not-allowed', 'restricted-mode');
+                    }
+
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.classList.add('opacity-40', 'cursor-not-allowed', 'grayscale');
+                        submitBtn.classList.replace('bg-blue-900', 'bg-amber-700');
+                        submitBtn.innerHTML = '<i class="fas fa-lock mr-2"></i> Transmissão Bloqueada';
+                    }
+                    console.warn(`Terminal não autorizado via token. IP: ${data.ip}`);
+                } else {
+                    if (statusText) {
+                        statusText.classList.remove('text-amber-600', 'font-black');
+                        statusText.classList.add('text-slate-500');
+                    }
+                    if (unauthorizedWarning) unauthorizedWarning.classList.add('hidden');
+                    console.log(`Acesso autorizado via Token/Localhost. IP: ${data.ip}`);
+                }
+            } catch (error) {
+                console.error('Erro ao verificar identidade:', error);
+            }
+        }
+
+        function handleTokenSetup() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const newToken = urlParams.get('set_token');
+            if (newToken) {
+                localStorage.setItem('terminal_auth_token', newToken);
+                console.log('Novo token de autorização salvo.');
+                // Limpa a URL sem recarregar
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
         window.addEventListener('load', function () {
+            handleTokenSetup();
             loadBothLotes();
+            loadDatasulReport();
+            checkPermissions();
         });
 
 
-        document.getElementById('lote').addEventListener('paste', function (e) {
-            e.preventDefault();
-            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            const numbersOnly = pastedText.replace(/\D/g, '').substring(0, 6);
+        // Listener Global de Paste para Leitor de Código de Barras
+        window.addEventListener('paste', function (e) {
+            // Se estiver em um campo de texto (exceto o lote), deixa o comportamento padrão
+            const tag = e.target.tagName.toLowerCase();
+            if (tag === 'textarea' || (tag === 'input' && e.target.id !== 'lote')) {
+                return;
+            }
 
-            if (numbersOnly.length > 0) {
-                detectedNumbers = numbersOnly;
-                this.value = numbersOnly;
+            const loteInput = document.getElementById('lote');
 
-                if (numbersOnly.length === 6) {
-                    const detectionIndicator = document.getElementById('detectionIndicator');
+            // Se o input estiver desativado (Terminal não autorizado), ignora o paste
+            if (loteInput && loteInput.disabled) {
+                return;
+            }
+
+            const plcSelect = document.getElementById('plc');
+            const detectionIndicator = document.getElementById('detectionIndicator');
+
+            // Pega o texto colado
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text').trim().toUpperCase();
+
+            // Detecta formato: Nacional (6 dígitos) ou Chinês (alfanumérico)
+            const isChinese = /[A-Z\-]/.test(pastedText);
+
+            let processedValue;
+            if (isChinese) {
+                // Formato Chinês: mantém alfanumérico + hífen
+                processedValue = pastedText.replace(/[^A-Z0-9\-]/g, '').substring(0, 20);
+            } else {
+                // Formato Nacional: apenas números, máximo 6
+                const match = pastedText.match(/\d{6}/);
+                processedValue = match ? match[0] : pastedText.replace(/\D/g, '').substring(0, 6);
+            }
+
+            if (processedValue.length > 0) {
+                loteInput.value = processedValue;
+                detectedNumbers = processedValue;
+
+                // Feedback visual no input
+                loteInput.classList.add('border-green-500');
+                setTimeout(() => loteInput.classList.remove('border-green-500'), 1000);
+
+                // Validação: 6 dígitos (nacional) OU mínimo 8 caracteres (chinês)
+                const isValid = (processedValue.length === 6 && !isChinese) || (isChinese && processedValue.length >= 8);
+
+                if (isValid) {
                     detectionIndicator.classList.add('active');
-                    setTimeout(() => {
-                        processDetectedLote();
-                    }, 100);
+
+                    // Se a linha não estiver selecionada, destaca o seletor
+                    if (!plcSelect.value) {
+                        plcSelect.classList.add('border-blue-500', 'shake');
+                        plcSelect.focus();
+                        setTimeout(() => plcSelect.classList.remove('shake'), 500);
+                    } else {
+                        // Se já tem linha, processa automático após breve delay
+                        setTimeout(() => {
+                            processDetectedLote();
+                        }, 300);
+                    }
                 }
+                e.preventDefault();
             }
         });
     </script>

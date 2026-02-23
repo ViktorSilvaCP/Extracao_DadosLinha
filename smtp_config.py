@@ -1,26 +1,17 @@
-SMTP_SERVER = "10.11.5.100"
-SMTP_PORT = 25
-SMTP_USERNAME = "brmartech@canpack.com"
-SMTP_PASSWORD = "Z3Fkn8WRENq$mbP+"
-SMTP_SENDER = "brmartech@canpack.com"
-SMTP_USE_AUTH = True
-SMTP_AUTH_TYPE = "basic"
-SMTP_TIMEOUT = 30
-SMTP_MAX_SIZE = 20
-NOTIFICATION_RECIPIENTS = [
-    "victor.nascimento@canpack.com"
-]
+import os
+from dotenv import load_dotenv
 
-# Different recipient lists
-ERROR_RECIPIENTS = ["victor.nascimento@canpack.com"]
-PRODUCTION_RECIPIENTS = [
-    "victor.nascimento@canpack.com",
-    # "diomar.rodrigues@canpack.com",
-    # "israel.ibiapina@canpack.com",
-    # "paulo.desouza@canpack.com"
-    "rodolfo.ramos@canpack.com",
-    "paulo.vieira@canpack.com",
-    "joao.marques@canpack.com",
-    "francisco.menezes@canpack.com",
-    # "livia.pereira@canpack.com"
-]
+load_dotenv()
+
+SMTP_SERVER = os.getenv("SMTP_SERVER")
+SMTP_PORT = int(os.getenv("SMTP_PORT", 25))
+SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+SMTP_SENDER = os.getenv("SMTP_SENDER")
+SMTP_USE_AUTH = os.getenv("SMTP_USE_AUTH", "True") == "True"
+SMTP_AUTH_TYPE = os.getenv("SMTP_AUTH_TYPE", "basic")
+SMTP_TIMEOUT = int(os.getenv("SMTP_TIMEOUT", 30))
+SMTP_MAX_SIZE = int(os.getenv("SMTP_MAX_SIZE", 20))
+NOTIFICATION_RECIPIENTS = os.getenv("NOTIFICATION_RECIPIENTS", "").split(",")
+ERROR_RECIPIENTS = os.getenv("ERROR_RECIPIENTS", "").split(",")
+PRODUCTION_RECIPIENTS = os.getenv("PRODUCTION_RECIPIENTS", "").split(",")

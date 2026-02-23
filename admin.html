@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | CANPACK Industrial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00529B;
+            --primary-light: #0070d2;
+            --secondary: #FF6B00;
+            --bg-body: #f4f7fa;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --sidebar-width: 260px;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary);
+            color: white;
+            padding: 24px;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--secondary);
+        }
+
+        .logo span {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 32px;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--bg-card);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Sections */
+        .section-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .machine-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .machine-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .machine-card.offline::after {
+            background: var(--danger);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .machine-info h3 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .machine-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-online {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-offline {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .card-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-box {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Table */
+        .data-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .btn-edit {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .btn-delete {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group.full {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            font-family: inherit;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 82, 155, 0.1);
+        }
+
+        /* Token Entry */
+        .token-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .token-box {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+
+        .token-box h2 {
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .token-box p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Token Overlay (Basic Auth) -->
+    <div id="tokenOverlay" class="token-overlay">
+        <form class="token-box" onsubmit="event.preventDefault(); verifyToken();">
+            <i class="fas fa-lock-open fa-3x" style="color: var(--secondary); margin-bottom: 20px;"></i>
+            <h2>Acesso Restrito</h2>
+            <p>Insira seu MASTER TOKEN de Administrador para gerenciar o sistema.</p>
+            <div class="form-group">
+                <input type="password" id="masterToken" name="token" autocomplete="current-password"
+                    placeholder="Digite o Token..." style="text-align: center; font-size: 18px; letter-spacing: 4px;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">ACESSAR
+                PAINEL</button>
+        </form>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-microchip"></i>
+            <span>CANPACK <small style="font-weight: 300;">PLC</small></span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" data-section="dashboard">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-section="machines">
+                    <i class="fas fa-industry"></i> Máquinas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-section="recipients">
+                    <i class="fas fa-users"></i> Destinatários
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-section="logs">
+                    <i class="fas fa-terminal"></i> Logs do Sistema
+                </a>
+            </li>
+            <li class="nav-item" style="margin-top: 40px;">
+                <a href="/" class="nav-link">
+                    <i class="fas fa-arrow-left"></i> Voltar para IHM
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header>
+            <div class="page-title">
+                <h1 id="currentSectionTitle">Dashboard</h1>
+                <p id="currentSectionDesc">Monitoramento em tempo real de todas as linhas.</p>
+            </div>
+            <div class="header-actions">
+                <span id="refreshTimer" style="font-size: 12px; color: var(--text-muted);">Atualizando em 10s...</span>
+                <button class="btn btn-outline" onclick="loadAllData()">
+                    <i class="fas fa-sync-alt"></i> Atualizar Agora
+                </button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD SECTION -->
+        <div id="section-dashboard" class="section-content active">
+            <div id="machineCards" class="stats-grid">
+                <!-- Cards dynamically loaded here -->
+            </div>
+
+            <div class="data-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Últimos Eventos de Produção</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Máquina</th>
+                            <th>Lote</th>
+                            <th>Quantidade</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentProductionBody">
+                        <!-- Rows dynamically loaded -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MACHINES SECTION -->
+        <div id="section-machines" class="section-content">
+            <div class="data-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Configuração de Máquinas (PLCs)</h3>
+                    <button class="btn btn-primary" onclick="openPLCModal()">
+                        <i class="fas fa-plus"></i> Adicionar Máquina
+                    </button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>IP</th>
+                            <th>Slot</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="plcsListBody">
+                        <!-- Rows dynamically loaded -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RECIPIENTS SECTION -->
+        <div id="section-recipients" class="section-content">
+            <div class="data-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Lista de Notificação por E-mail</h3>
+                    <button class="btn btn-primary" onclick="openRecipientModal()">
+                        <i class="fas fa-user-plus"></i> Adicionar Pessoa
+                    </button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recipientsListBody">
+                        <!-- Rows dynamically loaded -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LOGS SECTION -->
+        <div id="section-logs" class="section-content">
+            <div class="data-card"
+                style="background: #1e293b; color: #f8fafc; font-family: 'Courier New', Courier, monospace; height: 600px; display: flex; flex-direction: column;">
+                <div
+                    style="padding: 0 0 16px 0; display: flex; justify-content: space-between; border-bottom: 1px solid #334155;">
+                    <span style="color: #94a3b8;">Terminal do Servidor</span>
+                    <div>
+                        <select id="logLevel" onchange="loadLogs()"
+                            style="background: #334155; color: white; border: none; padding: 4px 8px; font-size: 12px; width: auto;">
+                            <option value="">TODOS OS NÍVEIS</option>
+                            <option value="INFO">INFO</option>
+                            <option value="ERROR">ERROR</option>
+                            <option value="WARNING">WARNING</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="logsContainer"
+                    style="flex: 1; overflow-y: auto; padding-top: 16px; font-size: 13px; line-height: 1.6;">
+                    <!-- Logs here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="plcModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="plcModalTitle">Configurar PLC</h2>
+            </div>
+            <form id="plcForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nome da Máquina (ID)</label>
+                        <input type="text" id="p_name" placeholder="Ex: Cupper_24" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço IP</label>
+                        <input type="text" id="p_ip" placeholder="10.81.71.XX" required>
+                    </div>
+                    <div class="form-group">
+                        <label>PLC Slot</label>
+                        <input type="number" id="p_slot" value="4">
+                    </div>
+                    <div class="form-group">
+                        <label>Status Inicial</label>
+                        <select id="p_active">
+                            <option value="1">ATIVO</option>
+                            <option value="0">INATIVO</option>
+                        </select>
+                    </div>
+                    <div class="form-group full">
+                        <h4 style="margin: 10px 0; font-size: 14px; border-bottom: 1px solid var(--border);">
+                            Configuração de Tags (Pylogix)</h4>
+                    </div>
+                    <div class="form-group">
+                        <label>Tag de Produção (Main)</label>
+                        <input type="text" id="p_tag_main" value="Count_discharge">
+                    </div>
+                    <div class="form-group">
+                        <label>Tag de Bobina (Serial)</label>
+                        <input type="text" id="p_tag_lote" value="Bobina_Consumida_Serial">
+                    </div>
+                    <div class="form-group">
+                        <label>Tag Trigger (Troca)</label>
+                        <input type="text" id="p_tag_trigger" value="Bobina_Trocada">
+                    </div>
+                    <div class="form-group">
+                        <label>Tag Feed Rate</label>
+                        <input type="text" id="p_tag_feed" value="Feed_Progression_INCH">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('plcModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Configuração</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="recipientModal" class="modal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2>Gerenciar Destinatário</h2>
+            </div>
+            <form id="recipientForm">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="r_name" required>
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="r_email" required>
+                </div>
+                <div class="form-group">
+                    <label>Receber Alertas</label>
+                    <select id="r_active">
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                    <button type="button" class="btn btn-outline"
+                        onclick="closeModal('recipientModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentToken = '';
+        let refreshCountdown = 10;
+        let timerInterval;
+
+        // Navigation
+        document.querySelectorAll('.nav-link[data-section]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.dataset.section;
+
+                // Update UI
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+                document.getElementById(`section-${section}`).classList.add('active');
+
+                // Update Titles
+                const titles = {
+                    dashboard: ['Dashboard', 'Monitoramento em tempo real de todas as linhas.'],
+                    machines: ['Máquinas PLC', 'Gerenciamento de conexões e endereçamento industrial.'],
+                    recipients: ['Destinatários de E-mail', 'Gestão de pessoas que recebem alertas de produção.'],
+                    logs: ['Logs de Sistema', 'Diagnóstico técnico das operações do servidor.']
+                };
+                document.getElementById('currentSectionTitle').innerText = titles[section][0];
+                document.getElementById('currentSectionDesc').innerText = titles[section][1];
+
+                // Load Section Data
+                if (section === 'machines') loadPLCs();
+                if (section === 'recipients') loadRecipients();
+                if (section === 'logs') loadLogs();
+            });
+        });
+
+        // Auth
+        function verifyToken() {
+            const tk = document.getElementById('masterToken').value;
+            if (!tk) return;
+
+            // Simple check by calling an admin endpoint
+            fetch('/api/admin/plcs', {
+                headers: { 'X-Terminal-Token': tk }
+            }).then(res => {
+                if (res.ok) {
+                    currentToken = tk;
+                    document.getElementById('tokenOverlay').style.display = 'none';
+                    startDashboard();
+                } else {
+                    alert('Token Inválido ou sem permissão.');
+                }
+            });
+        }
+
+        function startDashboard() {
+            loadAllData();
+            timerInterval = setInterval(() => {
+                refreshCountdown--;
+                document.getElementById('refreshTimer').innerText = `Atualizando em ${refreshCountdown}s...`;
+                if (refreshCountdown <= 0) {
+                    loadAllData();
+                    refreshCountdown = 15;
+                }
+            }, 1000);
+        }
+
+        async function loadAllData() {
+            try {
+                // Load Dashboard Stats
+                const resStats = await fetch('/api/lotes');
+                const stats = await resStats.json();
+                renderMachineCards(stats.dados_plcs);
+
+                // Load Recent Records
+                const resProd = await fetch('/api/producao/recente?limit=10');
+                const recent = await resProd.json();
+                renderRecentProduction(recent);
+
+                if (document.getElementById('section-logs').classList.contains('active')) loadLogs();
+                if (document.getElementById('section-machines').classList.contains('active')) loadPLCs();
+                if (document.getElementById('section-recipients').classList.contains('active')) loadRecipients();
+            } catch (err) {
+                console.error("Erro ao carregar dados:", err);
+            }
+        }
+
+        function renderMachineCards(plcs) {
+            const container = document.getElementById('machineCards');
+            container.innerHTML = '';
+
+            for (const [name, data] of Object.entries(plcs)) {
+                const card = document.createElement('div');
+                card.className = `machine-card ${data.conectado ? '' : 'offline'}`;
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="machine-info">
+                            <h3>${name}</h3>
+                            <p>${data.conectado ? 'Online' : 'Erro de Conexão'}</p>
+                        </div>
+                        <span class="status-badge ${data.conectado ? 'status-online' : 'status-offline'}">
+                            ${data.conectado ? 'Monitorado' : 'Desconectado'}
+                        </span>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Lote Atual</div>
+                            <div class="stat-value">${data.lote_atual || 'N/A'}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Produção Bobina</div>
+                            <div class="stat-value">${data.producao_bobina || 0}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Feed Rate</div>
+                            <div class="stat-value" style="font-size: 14px;">${data.feed_rate || '0.00'}"</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Status PLC</div>
+                            <div class="stat-value" style="font-size: 14px; color: ${data.status_maquina == 'ATIVO' ? '#22c55e' : '#f59e0b'}">${data.status_maquina}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 11px; color: var(--text-muted); text-align: right;">
+                        Último sync: ${data.ultima_atualizacao}
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+        }
+
+        function renderRecentProduction(records) {
+            const tbody = document.getElementById('recentProductionBody');
+            tbody.innerHTML = '';
+            records.forEach(r => {
+                const row = `
+                    <tr>
+                        <td>${r.timestamp.split(' ')[1]}</td>
+                        <td><strong>${r.machine_name}</strong></td>
+                        <td>${r.coil_number}</td>
+                        <td style="color: var(--primary); font-weight: 700;">${r.cups_produced}</td>
+                        <td style="font-size: 12px;">${r.consumption_type}</td>
+                        <td><span class="status-badge status-online">OK</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // PLC Management
+        async function loadPLCs() {
+            const res = await fetch('/api/admin/plcs', {
+                headers: { 'X-Terminal-Token': currentToken }
+            });
+            const data = await res.json();
+            const tbody = document.getElementById('plcsListBody');
+            tbody.innerHTML = '';
+            data.forEach(p => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.ip}</td>
+                        <td>Slot ${p.slot}</td>
+                        <td><span class="status-badge ${p.is_active ? 'status-online' : 'status-offline'}">${p.is_active ? 'ATIVO' : 'INATIVO'}</span></td>
+                        <td>
+                            <div class="actions-cell">
+                                <button class="btn-icon btn-edit" onclick='editPLC(${JSON.stringify(p)})'><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon btn-delete" onclick="deletePLC('${p.name}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openPLCModal() {
+            document.getElementById('plcForm').reset();
+            document.getElementById('p_name').disabled = false;
+            document.getElementById('plcModal').style.display = 'flex';
+        }
+
+        function editPLC(p) {
+            document.getElementById('p_name').value = p.name;
+            document.getElementById('p_name').disabled = true;
+            document.getElementById('p_ip').value = p.ip;
+            document.getElementById('p_slot').value = p.slot;
+            document.getElementById('p_active').value = p.is_active;
+            document.getElementById('p_tag_main').value = p.main_tag;
+            document.getElementById('p_tag_feed').value = p.feed_tag;
+            document.getElementById('p_tag_lote').value = p.lote_tag;
+            document.getElementById('p_tag_trigger').value = p.trigger_coil_tag;
+            document.getElementById('plcModal').style.display = 'flex';
+        }
+
+        document.getElementById('plcForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('p_name').value,
+                ip: document.getElementById('p_ip').value,
+                slot: parseInt(document.getElementById('p_slot').value),
+                is_active: parseInt(document.getElementById('p_active').value),
+                main_tag: document.getElementById('p_tag_main').value,
+                feed_tag: document.getElementById('p_tag_feed').value,
+                lote_tag: document.getElementById('p_tag_lote').value,
+                trigger_coil_tag: document.getElementById('p_tag_trigger').value,
+                socket_timeout: 5
+            };
+
+            const res = await fetch('/api/admin/plcs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Terminal-Token': currentToken
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                closeModal('plcModal');
+                loadPLCs();
+            } else {
+                alert('Erro ao salvar PLC.');
+            }
+        };
+
+        async function deletePLC(name) {
+            if (!confirm(`Deseja realmente remover a máquina ${name}?`)) return;
+            const res = await fetch(`/api/admin/plcs/${name}`, {
+                method: 'DELETE',
+                headers: { 'X-Terminal-Token': currentToken }
+            });
+            if (res.ok) loadPLCs();
+        }
+
+        // Recipients Management
+        async function loadRecipients() {
+            const res = await fetch('/api/admin/recipients', {
+                headers: { 'X-Terminal-Token': currentToken }
+            });
+            const data = await res.json();
+            const tbody = document.getElementById('recipientsListBody');
+            tbody.innerHTML = '';
+            data.forEach(r => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${r.name}</strong></td>
+                        <td>${r.email}</td>
+                        <td><span class="status-badge ${r.is_active ? 'status-online' : 'status-offline'}">${r.is_active ? 'ATIVO' : 'MUTADO'}</span></td>
+                        <td>
+                            <div class="actions-cell">
+                                <button class="btn-icon btn-delete" onclick="deleteRecipient(${r.id})"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openRecipientModal() {
+            document.getElementById('recipientForm').reset();
+            document.getElementById('recipientModal').style.display = 'flex';
+        }
+
+        document.getElementById('recipientForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('r_name').value,
+                email: document.getElementById('r_email').value,
+                is_active: parseInt(document.getElementById('r_active').value)
+            };
+
+            const res = await fetch('/api/admin/recipients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Terminal-Token': currentToken
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                closeModal('recipientModal');
+                loadRecipients();
+            }
+        };
+
+        async function deleteRecipient(id) {
+            if (!confirm('Deseja remover este destinatário?')) return;
+            await fetch(`/api/admin/recipients/${id}`, {
+                method: 'DELETE',
+                headers: { 'X-Terminal-Token': currentToken }
+            });
+            loadRecipients();
+        }
+
+        // Logs
+        async function loadLogs() {
+            const level = document.getElementById('logLevel').value;
+            const res = await fetch(`/api/logs?limit=200${level ? '&level=' + level : ''}`, {
+                headers: { 'X-Terminal-Token': currentToken }
+            });
+            const data = await res.json();
+            const container = document.getElementById('logsContainer');
+
+            if (data.error) {
+                container.innerHTML = `<p style="color: var(--danger)">${data.error}</p>`;
+                return;
+            }
+
+            container.innerHTML = data.logs.map(log => {
+                let color = '#94a3b8';
+                if (log.includes('ERROR')) color = '#ef4444';
+                if (log.includes('INFO')) color = '#22c55e';
+                if (log.includes('WARNING')) color = '#f59e0b';
+                return `<div style="margin-bottom: 2px;"><span style="color: ${color}">${log}</span></div>`;
+            }).join('');
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Utils
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>

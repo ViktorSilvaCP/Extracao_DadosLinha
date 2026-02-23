@@ -40,12 +40,14 @@ graph TB
 - ✅ Detecção automática de desconexão
 - ✅ Reconexão automática com backoff exponencial
 
-### Gestão de Lotes
+### Terminal Operacional (Log de Bobinas)
 
-- ✅ Interface web para inserção de códigos de barras
-- ✅ Validação de formato (mínimo 6 dígitos)
-- ✅ Rastreamento de bobinas de entrada/saída
-- ✅ Histórico completo de movimentações
+- ✅ **App Shell Architecture**: Layout fluido com sidebar persistente e área de conteúdo dinâmica.
+- ✅ **Token Locking**: Transmissão de lotes restrita via Token no LocalStorage (DHCP Proof).
+- ✅ **Interface Premium**: Design industrial em Navy Blue com glassmorphism.
+- ✅ **Barcode Ready**: Input de lote otimizado para leitores de código de barras.
+- ✅ **Real-time Stream**: Dashboard integrado com dados ao vivo dos PLCs 22 e 23.
+- ✅ **Histórico ERP**: Visualização direta do acumulado Datasul por turno.
 
 ### Cálculo de Turnos
 
@@ -81,8 +83,9 @@ Baseado no valor de `Feed_Progression_INCH`:
 ### Frontend
 
 - **HTML5/CSS3** - Interface responsiva
-- **JavaScript** - Interatividade
-- **TailwindCSS** - Estilização moderna
+- **JavaScript** - Lógica de interatividade e segurança client-side
+- **TailwindCSS** - Estilização industrial moderna (Navy Blue Brand)
+- **Glassmorphism** - Efeitos Visuais de profundidade e blur
 
 ### Infraestrutura
 

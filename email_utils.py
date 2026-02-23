@@ -16,16 +16,28 @@ class EmailNotifier:
         self.password = SMTP_PASSWORD
         self.email_pool = ThreadPoolExecutor(max_workers=max_workers)
         
-    def clean_subject(self, subject):
-        """Remove emojis and special characters from subject"""
-        return ''.join(char for char in subject if ord(char) < 128)
+    def _get_database_recipients(self):
+        """Busca destinatários ativos do banco de dados."""
+        from src.database_handler import DatabaseHandler
+        active_recipients = DatabaseHandler.get_all_recipients(only_active=True)
+        return [r['email'] for r in active_recipients]
 
     def _send_email(self, subject, message, is_error=False, attachments=None): # attachments is now a list
         try:
             # Fix subject encoding
             subject = subject.encode('latin1', 'ignore').decode('latin1')
             
-            recipients = ERROR_RECIPIENTS if is_error else PRODUCTION_RECIPIENTS
+            # Tenta carregar do banco primeiro para priorizar escalabilidade do Admin
+            db_recipients = self._get_database_recipients()
+            if is_error:
+                recipients = ERROR_RECIPIENTS if ERROR_RECIPIENTS and ERROR_RECIPIENTS[0] else db_recipients
+            else:
+                recipients = db_recipients if db_recipients else PRODUCTION_RECIPIENTS
+
+            if not recipients:
+                logging.warning("Nenhum destinatário de e-mail configurado no banco ou .env")
+                return
+
             msg = MIMEMultipart('alternative')
             msg['From'] = self.sender_email
             msg['To'] = ", ".join(recipients)

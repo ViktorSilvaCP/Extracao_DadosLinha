@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from datetime import datetime
 from timezone_utils import get_current_sao_paulo_time
 
@@ -46,12 +46,16 @@ class AllPLCsResponse(BaseModel):
     total_plcs: int = Field(..., description="Quantidade total de PLCs processados / Total PLCs processed")
 
 class ShiftProductionSummary(BaseModel):
-    machine_name: str = Field(..., description="Nome da linha de produção (ex: Cupper 22) / Production line name")
-    shift: str = Field(..., description="Turno em que a produção ocorreu (DIA/NOITE) / Production shift")
-    coil_number: str = Field(..., description="Número da bobina processada / Processed coil number")
-    total: int = Field(..., description="Quantidade total de copos produzidos no turno para esta bobina / Total cups produced in shift for this coil")
-    last_update: str = Field(..., description="Data e hora do último registro neste turno / Last record timestamp in this shift")
-    consumption_type: Optional[str] = Field(None, description="Tipo de consumo da bobina (Completa/Parcial) / Coil consumption type")
+    Linha: str = Field(..., description="Número da linha (ex: 22, 23)")
+    Maquina: str = Field(..., description="Nome da máquina (ex: Cupper_22)")
+    Turno: str = Field(..., description="Turno de produção (A, B ou DIA, NOITE)")
+    Dt_turno: str = Field(..., description="Data lógica de produção (YYYY-MM-DD)")
+    Lote: str = Field(..., description="Número do lote/bobina")
+    Quantidade: int = Field(..., description="Quantidade de copos (Delta se turno, Total se bobina)")
+    Tamanho: Optional[str] = Field(None, description="Tamanho/formato do copo")
+    Tipo_Reporte: Optional[str] = Field(None, description="Tipo: Turno ou Total")
+    Coil_Type: Optional[str] = Field(None, description="Tipo do material")
+    Horário_Evento: Optional[str] = Field(None, description="Horário exato do registro")
 
 class LotProductionSummary(BaseModel):
     machine_name: str = Field(..., description="Nome da linha de produção / Production line name")
@@ -62,15 +66,22 @@ class LotProductionSummary(BaseModel):
     end_time: str = Field(..., description="Horário de término do processamento do lote / Batch processing end time")
     consumption_type: Optional[str] = Field(None, description="Tipo de consumo da bobina (Completa/Parcial) / Coil consumption type")
 
+class ProductionShiftBreakdown(BaseModel):
+    shift: str
+    production_date: str
+    total_cups: int
+
 class CoilConsumptionLot(BaseModel):
     id: Optional[int] = Field(None, description="ID único do registro de consumo de bobina")
     machine_name: str = Field(..., description="Nome da máquina (e.g., Cupper_22)")
     coil_id: str = Field(..., description="Identificador único da bobina")
     lot_number: str = Field(..., description="Número do lote associado à bobina")
-    start_time: datetime = Field(..., description="Timestamp de início do consumo da bobina")
-    end_time: datetime = Field(..., description="Timestamp de fim do consumo da bobina")
+    data_turno: str = Field(..., description="Data de produção (Turno em formato YYYY-MM-DD)")
+    start_time: Optional[datetime] = Field(None, description="Timestamp completo de início para auditoria")
+    end_time: Optional[datetime] = Field(None, description="Timestamp completo de fim para auditoria")
     consumed_quantity: int = Field(..., description="Quantidade produzida da bobina")
     unit: str = Field(..., description="Unidade de medida (e.g., 'cups')")
-    production_date: str = Field(..., description="Data de produção (YYYY-MM-DD)")
     shift: str = Field(..., description="Turno de consumo (DIA/NOITE)")
     consumption_type: str = Field(..., description="Tipo de consumo (Completa/Parcial)")
+    coil_type: Optional[str] = Field(None, description="Tipo da bobina (L1, L2, M1, H1, etc.)")
+    detalhe_turnos: Optional[List['ProductionShiftBreakdown']] = Field(None, description="Detalhamento da produção fatiado por turno")

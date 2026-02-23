@@ -1,0 +1,23 @@
+import sqlite3
+import json
+
+def check_data():
+    conn = sqlite3.connect('production_data.db')
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    calc_date = "CASE WHEN time(timestamp) < '06:00:30' THEN date(timestamp, '-1 day') ELSE date(timestamp) END"
+    
+    print("--- Últimos 10 registros ---")
+    cur.execute(f"SELECT id, timestamp, {calc_date} as data_turno FROM production_records ORDER BY id DESC LIMIT 10")
+    rows = [dict(r) for r in cur.fetchall()]
+    print(json.dumps(rows, indent=2))
+    
+    print("\n--- Contagem por data_turno ---")
+    cur.execute(f"SELECT {calc_date} as data_turno, COUNT(*) as total FROM production_records GROUP BY data_turno ORDER BY data_turno DESC LIMIT 5")
+    rows = [dict(r) for r in cur.fetchall()]
+    print(json.dumps(rows, indent=2))
+    
+    conn.close()
+
+if __name__ == "__main__":
+    check_data()

@@ -3,7 +3,7 @@
 ## Informações do Projeto
 
 **Nome**: Sistema de Monitoramento PLC - CANPACK Brasil  
-**Versão**: 2.1.0  
+**Versão**: 2.5.0  
 **Desenvolvedor**: Victor Nascimento Silva  
 **Empresa**: CANPACK Brasil  
 **Departamento**: Tecnologia  
@@ -11,6 +11,13 @@
 ---
 
 ## Histórico de Versões
+
+### v2.5.0 (Janeiro 2026 - Atual)
+- ✅ **Arquitetura App Shell**: Dashboard fluido para desktop com sidebar fixa.
+- ✅ **Trava de Segurança por Token**: Transmissão restrita via Token no LocalStorage (Imune a DHCP).
+- ✅ **Identidade Visual Navy Blue**: Interface alinhada às cores da marca.
+- ✅ **Scroll Containers Independentes**: Melhor experiência de navegação em relatórios longos.
+- ✅ **Endpoint de Resolução de Identidade**: API para identificação de terminais na rede.
 
 ### v2.1.0 (Janeiro 2026)
 - ✅ Integração com ERP TOTVS

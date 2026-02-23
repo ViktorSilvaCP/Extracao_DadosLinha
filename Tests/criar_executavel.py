@@ -7,15 +7,15 @@ import subprocess
 import sys
 import os
 
-def install_pyinstaller():
-    """Instala o PyInstaller"""
+def install_dependencies():
+    """Instala as dependências necessárias para o Webview e Build"""
     try:
-        print("📦 Instalando PyInstaller...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "pyinstaller"])
-        print("✅ PyInstaller instalado com sucesso!")
+        print("📦 Instalando dependências (PyInstaller, pywebview)...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "pyinstaller", "pywebview", "python-dotenv"])
+        print("✅ Dependências instaladas com sucesso!")
         return True
     except Exception as e:
-        print(f"❌ Erro ao instalar PyInstaller: {e}")
+        print(f"❌ Erro ao instalar dependências: {e}")
         return False
 
 def create_executable():
@@ -52,8 +52,8 @@ def main():
     print("🚀 Criando Executável do Sistema de Lotes")
     print("=" * 50)
     
-    # Instalar PyInstaller
-    if not install_pyinstaller():
+    # Instalar Dependências
+    if not install_dependencies():
         return
     
     # Criar executável

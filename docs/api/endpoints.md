@@ -259,14 +259,41 @@ Interface para input manual de códigos de lote via formulário web.
         ```
 
     === "Response 200"
-        ```html
-        Lote 284043 processado com sucesso para Cupper_22.
-        ```
-
-    === "Response 400"
         ```json
         {
-          "detail": "O código do lote deve ter pelo menos 3 caracteres."
+          "success": true,
+          "message": "✅ Lote 284043 processado com sucesso para Cupper_22.",
+          "plc_written": true
+        }
+        ```
+
+    === "Response 403 (Forbidden)"
+        ```json
+        {
+          "success": false,
+          "message": "Acesso Negado: Este terminal não possui um token de autorização válido. Entre em contato com o suporte para autorizar este computador."
+        }
+        ```
+
+!!! danger "Token Authorization"
+    Este endpoint possui uma trava de segurança baseada em **Token (LocalStorage)**. Somente terminais autorizados que possuam o token `CANPACK_PROD_2026_AUTHORIZATION` podem realizar esta operação. Localhost (`127.0.0.1`) é autorizado por padrão.
+
+---
+
+## Identidade e Segurança
+
+### Informações do Cliente
+
+Retorna a identidade resolvida do computador que está realizando a chamada.
+
+!!! example "GET `/api/client_info`"
+
+    === "Response"
+        ```json
+        {
+          "hostname": "PC-PRODUCAO-01",
+          "ip": "10.81.19.12",
+          "authorized": true
         }
         ```
 
@@ -278,6 +305,7 @@ Interface para input manual de códigos de lote via formulário web.
 |--------|-------------|---------------|
 | 200 | OK | Requisição bem-sucedida |
 | 400 | Bad Request | Parâmetros inválidos |
+| 403 | Forbidden | Acesso negado (terminal não autorizado) |
 | 404 | Not Found | Recurso não encontrado |
 | 500 | Internal Server Error | Erro no servidor |
 

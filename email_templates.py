@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from timezone_utils import get_current_sao_paulo_time
 import re # Import regex module
 
@@ -125,7 +126,7 @@ Status: ✅ Produção atualizada
 Arquivos de detalhes anexados ao email.
 
 --------------------------------------------
-Em caso de divergência ou dúvidas, contactar: Victor.nascimento@canpack.com
+Em caso de divergência ou dúvidas, contactar: {os.getenv("ADMIN_EMAIL", "")}
 
 --------------------------------------------
 Sistema de Monitoramento PLC - CANPACK BR"""
@@ -399,11 +400,9 @@ Feed detectado: {feed_value}
 Lote: {lote}
 Bobina: {bobina}
 Hora da detecção: {timestamp}
-
 Atenção: O sistema identificou um valor de tamanho de copo que não está sendo controlado pelo sistema de bobinas.
 Verifique a configuração da máquina e atualize o sistema com o tamanho correto do copo.
-
-AÇÃO IMEDIATA: Envie um e-mail para victor.nascimento@canpack.com para cadastrar a configuração correta de passo do Die Set.
+AÇÃO IMEDIATA: Envie um e-mail para {os.getenv("ADMIN_EMAIL", "")} para cadastrar a configuração correta de passo do Die Set.
 """
     # HTML bonito, compatível com o template base
     html = f'''
@@ -505,7 +504,7 @@ AÇÃO IMEDIATA: Envie um e-mail para victor.nascimento@canpack.com para cadastr
                                         Ação Requerida
                                     </p>
                                     <p style="margin: 6px 0 0 0; font-size: 14px; color: #92400e; line-height: 1.5;">
-                                        Envie um e-mail para <a href="mailto:victor.nascimento@canpack.com" style="color: #ea580c; font-weight: 600; text-decoration: none;">victor.nascimento@canpack.com</a> 
+                                        Envie um e-mail para <a href="mailto:{os.getenv('ADMIN_EMAIL', '')}" style="color: #ea580c; font-weight: 600; text-decoration: none;">{os.getenv('ADMIN_EMAIL', '')}</a> 
                                         com a configuração correta do Die Set para cadastro imediato.
                                     </p>
                                 </td>
@@ -590,3 +589,89 @@ AÇÃO IMEDIATA: Envie um e-mail para victor.nascimento@canpack.com para cadastr
 </html>
 '''
     return {"text": text, "html": html}
+
+def format_late_lot_alert(plc_name, old_lot):
+    """Formata email de informativo para lote não trocado após 3 horas."""
+    current_time = get_current_sao_paulo_time().strftime("%d/%m/%Y %H:%M:%S")
+    
+    # Texto simples (atualizado para refletir o tom do HTML)
+    text = f"""
+STATUS DE PRODUÇÃO: {plc_name.upper()}
+LINHA: {plc_name}
+================================
+
+Informativo: Lote em permanência.
+
+O sistema identificou que a produção continua operando com o mesmo lote ({old_lot}) após o ciclo de 3 horas.
+
+LOTE ATUAL: {old_lot}
+STATUS: Sem alteração
+
+Este é um aviso automático para fins de rastreabilidade. Se a permanência do lote estiver correta, nenhuma ação é necessária.
+"""
+
+    # HTML estilizado (fornecido pelo usuário)
+    html = f"""
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informativo: Lote Inalterado</title>
+</head>
+<body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; color: #1f2937;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb;">
+        
+        <div style="background-color: #334155; padding: 24px; text-align: center;">
+            <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 600; letter-spacing: 1px;">
+                STATUS DE PRODUÇÃO: {plc_name.upper()}
+            </h1>
+        </div>
+
+        <div style="padding: 32px 24px;">
+            <div style="background-color: #f0f9ff; border: 1px solid #e0f2fe; border-left: 4px solid #3b82f6; padding: 16px; margin-bottom: 24px; border-radius: 4px;">
+                <p style="margin: 0; color: #075985; font-weight: 600; font-size: 16px;">
+                    Informativo: Lote em permanência.
+                </p>
+                <p style="margin: 8px 0 0 0; color: #0c4a6e; font-size: 14px; line-height: 1.4;">
+                    O sistema identificou que a produção continua operando com o mesmo lote após o ciclo de 3 horas.
+                </p>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+                <tr>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #6b7280; width: 40%;">ID do Sistema</td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500; color: #111827;">{plc_name}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #6b7280;">Linha de Produção</td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500; color: #111827;">{plc_name}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #6b7280;">Lote Atual</td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500; color: #111827;">
+                        <span style="font-family: monospace; font-size: 16px; background: #f3f4f6; padding: 4px 8px; border-radius: 4px; border: 1px solid #d1d5db;">
+                            {old_lot}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #6b7280;">Status</td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500; color: #059669;">Sem alteração</td>
+                </tr>
+            </table>
+
+            <p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.6;">
+                Este é um aviso automático para fins de rastreabilidade. Se a permanência do lote {old_lot} estiver correta de acordo com o planejamento, nenhuma ação é necessária.
+            </p>
+        </div>
+
+        <div style="background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
+            <p style="margin: 0; font-weight: 600;">Monitoramento Industrial Canpack Brasil</p>
+            <p style="margin: 4px 0 0 0;">Relatório Automático | Não responda a este e-mail.</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+    return {'text': text, 'html': html}

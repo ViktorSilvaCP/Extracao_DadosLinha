@@ -6,8 +6,8 @@ import time
 
 def backup_database():
     """Realiza o backup do banco de dados SQLite."""
-    source_db = "production_data.db"
-    backup_dir = "backups"
+    source_db = os.getenv("DB_FILE", "production_data.db")
+    backup_dir = os.getenv("BACKUP_DIR", "backups")
     
     if not os.path.exists(source_db):
         logging.error(f"Banco de dados {source_db} não encontrado para backup.")
