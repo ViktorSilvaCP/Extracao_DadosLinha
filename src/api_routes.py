@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form, Request, Depends, HTTPException
+from fastapi import APIRouter, Form, Request, Depends, HTTPException, Query
 from typing import List, Optional
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -167,17 +167,26 @@ async def get_shift_production(machine_name: str = None):
     data = DatabaseHandler.get_production_by_shift(machine_name)
     return data
 
-@router.get("/api/producao/lote", response_model=List[LotProductionSummary], summary="📦 Histórico por Lote/Bobina / Batch/Coil History", tags=["Relatórios de Produção / Production Reports"])
-async def get_lot_production(machine_name: str = None, date: str = None):
+@router.get("/api/producao/lote", response_model=List[CoilConsumptionLot], summary="📦 Histórico de Consumo por Bobina / Coil Consumption History", tags=["Relatórios de Produção / Production Reports"])
+async def get_lot_production(
+    machine_name: Optional[str] = Query(None, description="Filtrar por nome da máquina (e.g., Cupper_22)"),
+    start_date: Optional[str] = Query(None, description="Data de início para filtro (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(None, description="Data de fim para filtro (YYYY-MM-DD)"),
+    lot_number: Optional[str] = Query(None, description="Filtrar por número do lote")
+):
     """
-    Retorna a produção detalhada de cada lote (bobina), incluindo o turno em que ocorreu. / Returns detailed production for each batch (coil), including the shift.
-    Por padrão, retorna dados do dia anterior para refletir o consumo real. / By default, returns data from the previous day to reflect actual consumption.
+    Retorna o histórico de consumo de bobinas, incluindo produção detalhada por bobina.
+    É possível filtrar por máquina, intervalo de datas e número de lote.
     """
-    if date is None:
-        yesterday = get_current_sao_paulo_time() - timedelta(days=1)
-        date = yesterday.strftime("%Y-%m-%d")
-    data = DatabaseHandler.get_production_by_lot(machine_name, date)
-    return data
+    data = DatabaseHandler.get_coil_consumption_records(
+        machine_name=machine_name,
+        start_date=start_date,
+        end_date=end_date,
+        lot_number=lot_number
+    )
+    # Convert Row objects to CoilConsumptionLot Pydantic models
+    # This assumes the database columns match the Pydantic model fields closely
+    return [CoilConsumptionLot(**record) for record in data]
 
 @router.get("/api/producao/recente", summary="🕒 Últimos Registros de Produção / Recent Production Records", tags=["Relatórios de Produção / Production Reports"])
 async def get_recent_production_records(machine_name: Optional[str] = None, limit: int = 20):
@@ -201,26 +210,6 @@ async def get_totvs_production(limit: int = 100, since_id: int = None):
         "timestamp": get_current_sao_paulo_time().strftime("%Y-%m-%d %H:%M:%S")
     }
 
-@router.get("/api/producao/coil_consumption", response_model=List[CoilConsumptionLot], summary="📦 Histórico de Consumo por Bobina / Coil Consumption History", tags=["Relatórios de Produção / Production Reports"])
-async def get_coil_consumption_history(
-    machine_name: Optional[str] = Query(None, description="Filtrar por nome da máquina (e.g., Cupper_22)"),
-    start_date: Optional[str] = Query(None, description="Data de início para filtro (YYYY-MM-DD)"),
-    end_date: Optional[str] = Query(None, description="Data de fim para filtro (YYYY-MM-DD)"),
-    lot_number: Optional[str] = Query(None, description="Filtrar por número do lote")
-):
-    """
-    Retorna o histórico de consumo de bobinas, incluindo produção detalhada por bobina.
-    É possível filtrar por máquina, intervalo de datas e número de lote.
-    """
-    data = DatabaseHandler.get_coil_consumption_records(
-        machine_name=machine_name,
-        start_date=start_date,
-        end_date=end_date,
-        lot_number=lot_number
-    )
-    # Convert Row objects to CoilConsumptionLot Pydantic models
-    # This assumes the database columns match the Pydantic model fields closely
-    return [CoilConsumptionLot(**record) for record in data]
 
 @router.get("/api/health", summary="💓 Heartbeat do Sistema / System Heartbeat", tags=["Monitoramento / Monitoring"])
 async def health_check():
